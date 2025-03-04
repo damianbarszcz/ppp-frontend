@@ -4,7 +4,7 @@ import {useRouter} from "next/navigation";
 import axios from "axios";
 import LoginBanner from "./LoginBanner";
 import LoginPanel from "./LoginPanel";
-import MsgSuccess from "@/app/components/ui/MsgSuccess";
+import Message from "@/app/components/ui/Message";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -14,8 +14,8 @@ export default function LoginPage() {
     const [msg_error, setMsgError] = useState('');
 
     useEffect(() => {
-        const success_msg = sessionStorage.getItem('registerMessage');
-        if (success_msg) {
+        const msg_success = sessionStorage.getItem('registerMessage');
+        if (msg_success) {
             setMsgSuccess(msg_success);
             sessionStorage.removeItem('registerMessage');
         }
@@ -41,14 +41,8 @@ export default function LoginPage() {
 
     return (
         <>
-            { msg_error &&
-            <div className="global--bg-error text-center p-3" role="alert">
-                <span className="global--text-white font-body text-sm font-medium">{msg_error}</span>
-            </div> }
-
-            { msg_success &&
-                ( <MsgSuccess message ={msg_success} /> )
-            }
+            { msg_error && ( <Message message ={msg_error} type="error"/> )}
+            { msg_success && ( <Message message ={msg_success} type="success" /> )}
 
             <main className="global--login-theme flex h-[96.75vh] m-4">
                 <section className="w-1/2 h-full">
