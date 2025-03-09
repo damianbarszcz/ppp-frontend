@@ -8,21 +8,20 @@ import ProspectorDashboard from "@/app/member/dashboard/ProspectorDashboard";
 export default function DashboardPage() {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
-    const [loading, setLoading] = useState(true); // ✅ Dodajemy `loading`
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
                 const response = await axios.get("http://localhost:8000/api/auth/me", { withCredentials: true });
                 if (!response.data.user) {
-                    throw new Error("❌ Użytkownik nie znaleziony.");
+                    throw new Error("Użytkownik nie znaleziony.");
                 }
                 setUser(response.data.user);
-                console.log(response.data.user);
             } catch (error) {
                 router.push("/auth/login");
             } finally {
-                setLoading(false); // ✅ Kończymy ładowanie
+                setLoading(false);
             }
         };
 

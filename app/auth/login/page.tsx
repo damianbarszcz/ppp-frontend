@@ -28,7 +28,7 @@ export default function LoginPage() {
 
         try {
             const response = await axios.post("http://localhost:8000/api/auth/login", { email, password }, { withCredentials: true });
-            console.log("Odpowiedź serwera:", response.data);
+
             if (response.data.success) {
                 router.push("/member/dashboard");
             }
