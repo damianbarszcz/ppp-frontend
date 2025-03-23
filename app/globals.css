@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --black: #161616;
+    --white: #ffffff;
+    --dark: #3C4043;
+    --light-dark: #3F3F3F;
+    --dark-silver: #A0A0A0;
+    --silver: #5A5A5A;
+    --medium-gray: #777777;
+    --blue: #3861DA;
+    --ice-blue: #F4F8FB;
+    --anthracite:  #272627;
+    --red: #f55;
+    --green: #42c769;
+  }
+}
+
+body {
+  @apply font-serif;
+}
+
+*:focus {
+  outline: none;
+}
+
+.global--bg-white{
+  background-color: var(--white);
+}
+.global--bg-dark{
+  background-color: var(--dark);
+}
+.global--bg-l-dark{
+  background-color: var(--light-dark);
+}
+.global--bg-anthracite{
+  background-color: var(--anthracite);
+}
+.global--bg-blue{
+  background-color: var(--blue);
+}
+.global--bg-error{
+  background-color: var(--red);
+}
+.global--bg-success{
+  background-color: var(--green);
+}
+.global--text-white{
+  color: var(--white);
+}
+.global--text-dark{
+  color: var(--dark);
+}
+.global--text-d-silver{
+  color: var(--dark-silver);
+}
+.global--text-silver{
+  color: var(--dark-silver);
+}
+.global--text-blue{
+  color: var(--blue);
+}
+.global--text-link{
+  color: var(--blue);
+}
+.global--text-error{
+  color: var(--red);
+}
+.global--login-theme{
+  background-color: var(--white);
+}
+.global--register-theme{
+  background-color: var(--black);
+}
+.global--border-anthracite{
+  border-width:1px;
+  border-color: var(--anthracite);
+  border-style:solid;
+}
+.global--border-blue{
+  border-width:1px;
+  border-color: var(--blue);
+  border-style:solid;
+}
+
+.global--msg-success{
+  display: inline-block;
+  position: absolute;
+  top:5.5rem;
+  left:50%;
+  transform: translateX(-50%);
+  padding: 0.5rem;
+  border: 1px solid green;
+  border-radius: 5px;
+  color: green;
+}

@@ -1,0 +1,31 @@
+
+.input{
+    padding: 0.85rem 1rem;
+    border-radius: 5px;
+}
+
+.input_light::placeholder {
+    color:var(--dark-silver);
+}
+
+.input_dark::placeholder {
+    color:var(--medium-gray);
+}
+
+.input_light {
+    background-color: var(--ice-blue);
+    color: var(--dark);
+}
+
+.input_dark {
+    background-color: var(--anthracite);
+    color: var(--white);
+}
+
+.label_light {
+    color: var(--dark);
+}
+
+.label_dark {
+    color: var(--white);
+}

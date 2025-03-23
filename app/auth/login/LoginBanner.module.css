@@ -1,0 +1,10 @@
+
+.banner {
+    border-radius: 20px;
+    background: radial-gradient(circle at top, #D1A3ED 0%, #6D2AB2 25%, #2F135E 50%, #161616 88%);
+}
+
+.banner  h2{
+    line-height: 5rem;
+}
+
