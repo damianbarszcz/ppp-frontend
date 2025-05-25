@@ -26,11 +26,13 @@ const ChannelList: React.FC<ChannelListProps> = ({ teams }) => {
                         <div className="mt-5">
                             <div>
                                 <p className="font-body text-sm global--text-silver">
-                                    {team.description}
+                                    {team.team_details.description}
                                 </p>
                             </div>
                             <div className="flex mt-5">
-                                <span className="block pt-1.5 pb-1.5 pl-3 pr-3 font-body text-sm global--bg-d-white rounded-sm text-center global--text-d-silver">{team.tags}</span>
+                                <span className="block pt-1.5 pb-1.5 pl-3 pr-3 font-body text-sm global--bg-d-white rounded-sm text-center global--text-d-silver">
+                                    {team.team_details.tags}
+                                </span>
                             </div>
 
                             <div className="mt-10 flex justify-end">
