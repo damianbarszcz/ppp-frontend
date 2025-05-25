@@ -4,6 +4,17 @@
     border-radius: 5px;
 }
 
+.input__search_main{
+    padding: 1rem 1.5rem;
+    border-radius: 24px;
+}
+
+.input__search_nav{
+    padding: 0.65rem 0.75rem;
+    min-width: 231px;
+    border-radius: 5px;
+}
+
 .input_light::placeholder {
     color:var(--dark-silver);
 }

@@ -27,48 +27,63 @@ const RegisterPanelStep1: React.FC<RegisterPanelStep1Props> = ({ nextStep, updat
         <div className="m-auto max-w-md flex flex-col">
             <form onSubmit={(e) => { e.preventDefault(); nextStep(); }} className="mt-10 w-full">
                 <div className="flex gap-4">
-                    <Input
-                        labelCaption="Imię"
-                        name="name"
-                        type="text"
-                        placeholder="np. Jan"
-                        uiType="dark"
-                        value={formData.name}
-                        onChange={(e) => updateFormData({ name: e.target.value })}
-                        validateError = {nameError}
-                    />
+                    <div className="mb-10">
+                        <Input
+                            isLabel={true}
+                            labelCaption="Imię"
+                            name="name"
+                            type="text"
+                            placeholder="np. Jan"
+                            uiType="dark"
+                            value={formData.name}
+                            onChange={(e) => updateFormData({ name: e.target.value })}
+                            validateError = {nameError}
+                        />
+                    </div>
 
+                    <div className="mb-10">
+                        <Input
+                            isLabel={true}
+                            labelCaption="Nazwisko"
+                            name="surname"
+                            type="text"
+                            placeholder="np. Kowalski"
+                            uiType="dark"
+                            value={formData.surname}
+                            onChange={(e) => updateFormData({ surname: e.target.value })}
+                            validateError = {surnameError}
+                        />
+                    </div>
+                </div>
+
+                <div className="mb-10">
                     <Input
-                        labelCaption="Nazwisko"
-                        name="surname"
+                        isLabel={true}
+                        labelCaption="Adres e-mail"
+                        name="email"
                         type="text"
-                        placeholder="np. Kowalski"
+                        placeholder="np. jannowak@gmail.com"
                         uiType="dark"
-                        value={formData.surname}
-                        onChange={(e) => updateFormData({ surname: e.target.value })}
-                        validateError = {surnameError}
+                        value={formData.email}
+                        onChange={(e) => updateFormData({ email: e.target.value })}
+                        validateError = {emailError}
                     />
                 </div>
-                <Input
-                    labelCaption="Adres e-mail"
-                    name="email"
-                    type="text"
-                    placeholder="np. jannowak@gmail.com"
-                    uiType="dark"
-                    value={formData.email}
-                    onChange={(e) => updateFormData({ email: e.target.value })}
-                    validateError = {emailError}
-                />
-                <Input
-                    labelCaption="Hasło"
-                    name="password"
-                    type="password"
-                    placeholder="Wprowadź swoje hasło"
-                    uiType="dark"
-                    value={formData.password}
-                    onChange={(e) => updateFormData({ password: e.target.value })}
-                    validateError = {passwordError}
-                />
+
+                <div className="mb-10">
+                    <Input
+                        isLabel={true}
+                        labelCaption="Hasło"
+                        name="password"
+                        type="password"
+                        placeholder="Wprowadź swoje hasło"
+                        uiType="dark"
+                        value={formData.password}
+                        onChange={(e) => updateFormData({ password: e.target.value })}
+                        validateError = {passwordError}
+                    />
+                </div>
+
                 <Button type="submit" uiType="light">Kontynuuj</Button>
             </form>
         </div>

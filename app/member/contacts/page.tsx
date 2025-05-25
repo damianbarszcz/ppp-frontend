@@ -2,40 +2,28 @@
 import React, {useState} from "react";
 import { useAuth } from "@/app/context/AuthContext";
 import ProtectedRoute from '@/app/routes/protected/ProtectedRoute';
-import MentorHome from "@/app/member/home/MentorHome";
-import ProspectorHome from "@/app/member/home/ProspectorHome";
 import Navigation from "@/app/components/navigation/Navigation";
+import ContactList from "@/app/member/contacts/ContactList";
+import ContactActions from "@/app/member/contacts/ContactActions";
 
-export default function HomePage() {
+export default function ContactsPage() {
     const { user, logout } = useAuth();
     const [ dropdownOpen, setDropdownOpen] = useState(false);
 
     return (
         <ProtectedRoute>
-            {user?.account_type === "M" ? (
+            {user?.account_type === "P" && (
                 <>
                     <Navigation
-                        activeSection="home"
+                        activeSection="contacts"
                         user = {user!}
                         handleLogout={logout}
                         dropdownOpen = {dropdownOpen}
                         setDropdownOpen={setDropdownOpen}
                         type="standard"
                     />
-                    <MentorHome user={user!} />
-                </>
-            ) : (
-                <>
-                    <Navigation
-                        activeSection="home"
-                        user = {user!}
-                        handleLogout={logout}
-                        dropdownOpen = {dropdownOpen}
-                        setDropdownOpen={setDropdownOpen}
-                        type="standard"
-                    />
-
-                    <ProspectorHome user={user!} />
+                    <ContactActions />
+                    <ContactList />
                 </>
             )}
         </ProtectedRoute>

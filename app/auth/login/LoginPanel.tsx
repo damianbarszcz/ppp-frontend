@@ -36,27 +36,33 @@ const LoginPanel : React.FC<LoginPanelProps> = ({
             </header>
 
             <form onSubmit={handleLogin} className="mt-10">
-                <Input
-                    labelCaption="Adres e-mail"
-                    name="email"
-                    type="text"
-                    placeholder="Wpisz swój adres e-mail"
-                    uiType="light"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    validateError = {emailError}
-                />
+                <div className="mb-10">
+                    <Input
+                        isLabel={true}
+                        labelCaption="Adres e-mail"
+                        name="email"
+                        type="text"
+                        placeholder="Wpisz swój adres e-mail"
+                        uiType="light"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        validateError = {emailError}
+                    />
+                </div>
 
-                <Input
-                    labelCaption="Hasło"
-                    name="password"
-                    type="password"
-                    placeholder="Wprowadź swoje hasło."
-                    uiType="light"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    validateError = {passwordError}
-                />
+                <div className="mb-10">
+                    <Input
+                        isLabel={true}
+                        labelCaption="Hasło"
+                        name="password"
+                        type="password"
+                        placeholder="Wprowadź swoje hasło."
+                        uiType="light"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        validateError = {passwordError}
+                    />
+                </div>
                 <Button type="submit" uiType="dark">Zaloguj</Button>
             </form>
 

@@ -6,8 +6,10 @@ import axios from "axios";
 interface User {
     id: number;
     email: string;
-    name: string;
     account_type: string;
+    name:string;
+    surname:string;
+    user_avatar_color: string;
 }
 
 interface AuthContextType {

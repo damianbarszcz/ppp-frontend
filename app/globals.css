@@ -11,6 +11,7 @@
   :root {
     --black: #161616;
     --white: #ffffff;
+    --dark-white: #F2F3F7;
     --dark: #3C4043;
     --light-dark: #3F3F3F;
     --dark-silver: #A0A0A0;
@@ -22,6 +23,10 @@
     --red: #f55;
     --green: #42c769;
   }
+}
+
+html, body, #root {
+  height: 100%;
 }
 
 body {
@@ -47,11 +52,17 @@ body {
 .global--bg-blue{
   background-color: var(--blue);
 }
+.global--bg-d-white{
+  background-color: var(--dark-white);
+}
 .global--bg-error{
   background-color: var(--red);
 }
 .global--bg-success{
   background-color: var(--green);
+}
+.global--bg-silver{
+  background-color: var(--silver);
 }
 .global--text-white{
   color: var(--white);
@@ -63,7 +74,7 @@ body {
   color: var(--dark-silver);
 }
 .global--text-silver{
-  color: var(--dark-silver);
+  color: var(--silver);
 }
 .global--text-blue{
   color: var(--blue);
@@ -89,6 +100,34 @@ body {
   border-width:1px;
   border-color: var(--blue);
   border-style:solid;
+}
+
+.global--border-silver{
+  border-width:1px;
+  border-color: var(--silver);
+  border-style:solid;
+}
+
+.global--2x-border-white{
+  border-width:2px;
+  border-color: var(--white);
+  border-style:solid;
+}
+
+.global--border-d-white{
+  border-width:1px;
+  border-color: var(--dark-white);
+  border-style:solid;
+}
+
+.global--border-dark{
+  border-width:1px;
+  border-color: var(--dark);
+  border-style:solid;
+}
+
+.global--b-border-d-white{
+  border-bottom: 1px solid var(--dark-white);
 }
 
 .global--msg-success{

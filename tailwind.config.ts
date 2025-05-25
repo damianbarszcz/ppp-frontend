@@ -8,6 +8,10 @@ export default {
         heading: ["Noto Sans", "sans-serif"], // Czcionka dla nagłówków
         body: ["Noto Sans", "sans-serif"], // Czcionka dla treści
       },
+      colors: {
+        'custom-blue': '#282F45',
+        'action-red': '#E7184C',
+      },
     },
   },
   plugins: [],
