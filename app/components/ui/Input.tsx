@@ -26,11 +26,11 @@ const Input: React.FC<InputProps> = ({placeholder, type, name, uiType, labelCapt
         name !== "account-search" &&  name !== "nav-search" ? (
         <div className="flex flex-col relative">
             {isLabel ?
-                <label htmlFor={name} aria-label={labelCaption} className={`${labelStyle} font-body text-base font-medium mb-2 block`}>
+                <label htmlFor={name} aria-label={labelCaption} className={`${labelStyle} text-base font-medium mb-2 block`}>
                     {labelCaption}
                 </label> : ''}
                 <input
-                    className={`${styles.input} ${inputStyle} w-full font-body font-medium text-base`}
+                    className={`${styles.input} ${inputStyle} w-full font-medium text-base`}
                     name={name}
                     type={isPasswordVisible ? "text" : type}
                     placeholder={placeholder}
@@ -54,7 +54,7 @@ const Input: React.FC<InputProps> = ({placeholder, type, name, uiType, labelCapt
                         )}
                     </span>
                 )}
-                {validateError ? <span className="absolute bottom-[-30px] font-body text-sm global--text-error">{validateError}</span> : ''}
+                {validateError ? <span className="absolute bottom-[-30px] text-sm global--text-error">{validateError}</span> : ''}
         </div>)
             : (
         <div>

@@ -1,5 +1,5 @@
 
-export function isDarkColor(hex: string): boolean {
+export function isDarkColor(hex: string|undefined): boolean {
     if (!hex) return false;
     const cleaned = hex.replace('#', '');
     const r = parseInt(cleaned.slice(0, 2), 16);

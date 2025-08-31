@@ -5,6 +5,7 @@ import LoginBanner from "./LoginBanner";
 import LoginPanel from "./LoginPanel";
 import Message from "@/app/components/ui/Message";
 import PublicRoute from "@/app/routes/public/PublicRoute";
+import {API_CONFIG} from "@/app/config/global";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -42,14 +43,21 @@ export default function LoginPage() {
         if (hasError) return;
 
         try {
-            const response = await axios.post("http://localhost:8000/api/auth/login",
+            const response = await axios.post(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.auth.handleLogin}`,
                 { email, password }, { withCredentials: true }
             );
 
             if (response.data.success) {
                 setEmail('');
                 setPassword('');
-                window.location.href = "/member/home";
+
+                const accountType = response.data.account_type;
+
+                if (accountType === 'M') {
+                    window.location.href = "/member/mentor/home";
+                } else {
+                   window.location.href = "/member/prospector/home";
+                }
             }
         } catch (error: any) {
             setPassword('');

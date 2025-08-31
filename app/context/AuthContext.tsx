@@ -1,16 +1,8 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
+import { User } from '@/app/types/user.types';
 import { useRouter } from "next/navigation";
 import axios from "axios";
-
-interface User {
-    id: number;
-    email: string;
-    account_type: string;
-    name:string;
-    surname:string;
-    user_avatar_color: string;
-}
 
 interface AuthContextType {
     user: User | null;

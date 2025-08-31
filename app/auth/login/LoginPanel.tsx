@@ -3,18 +3,9 @@ import Link from "next/link";
 import Button from "@/app/components/ui/Button";
 import Input from "@/app/components/ui/Input";
 import Brand from "@/app/components/ui/Brand";
+import {LoginProps} from "@/app/types/auth.types";
 
-interface LoginPanelProps{
-    handleLogin: (e:React.FormEvent) => void;
-    email: string;
-    password: string;
-    setEmail: (email:string) => void;
-    setPassword: (password:string) => void;
-    emailError: string;
-    passwordError: string;
-}
-
-const LoginPanel : React.FC<LoginPanelProps> = ({
+const LoginPanel : React.FC<LoginProps> = ({
     handleLogin,
     email,
     password,
@@ -22,15 +13,15 @@ const LoginPanel : React.FC<LoginPanelProps> = ({
     setPassword,
     emailError,
     passwordError
-}: LoginPanelProps) => {
+}: LoginProps) => {
 
     return (
         <div className="h-full max-w-md m-auto flex flex-col justify-center">
             <Brand uiType="dark"/>
 
             <header className="text-center mt-10">
-                <h2 className="font-heading text-3xl font-bold global--text-dark">Witaj ponownie</h2>
-                <p className="global--text-silver mt-5 font-body text-base font-regular">
+                <h2 className="text-3xl font-bold global--text-dark">Witaj ponownie</h2>
+                <p className="global--text-silver mt-5 text-base font-regular">
                     Wprowadź swój adres e-mail i hasło, aby uzyskać dostęp do swojego konta
                 </p>
             </header>
@@ -63,12 +54,13 @@ const LoginPanel : React.FC<LoginPanelProps> = ({
                         validateError = {passwordError}
                     />
                 </div>
-                <Button type="submit" uiType="dark">Zaloguj</Button>
+
+                <Button type="submit" uiType="dark" size="longSize">Zaloguj</Button>
             </form>
 
             <div className="text-center mt-10 flex justify-center">
-                <p className="text-base font-body global--text-dark">Nie masz konta?</p>
-                <Link href="/auth/register" className="global--text-link ml-2 text-base font-semibold font-body" target="_self">Zarejestruj się</Link>
+                <p className="text-base global--text-dark">Nie masz konta?</p>
+                <Link href="/auth/register" className="global--text-link ml-2 text-base font-semibold" target="_self">Zarejestruj się</Link>
             </div>
         </div>
     );

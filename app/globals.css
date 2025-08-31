@@ -14,13 +14,15 @@
     --dark-white: #F2F3F7;
     --dark: #3C4043;
     --light-dark: #3F3F3F;
+    --gray: #454444;
     --dark-silver: #A0A0A0;
     --silver: #5A5A5A;
     --medium-gray: #777777;
     --blue: #3861DA;
+    --dark-blue: #2f4ead;
     --ice-blue: #F4F8FB;
     --anthracite:  #272627;
-    --red: #f55;
+    --red: #E7184C;
     --green: #42c769;
   }
 }
@@ -40,6 +42,9 @@ body {
 .global--bg-white{
   background-color: var(--white);
 }
+.global--bg-black{
+  background-color: var(--black);
+}
 .global--bg-dark{
   background-color: var(--dark);
 }
@@ -58,8 +63,14 @@ body {
 .global--bg-error{
   background-color: var(--red);
 }
+.global--bg-red{
+  background-color: var(--red);
+}
 .global--bg-success{
   background-color: var(--green);
+}
+.global--bg-gray{
+  background-color: var(--gray);
 }
 .global--bg-silver{
   background-color: var(--silver);
@@ -78,6 +89,12 @@ body {
 }
 .global--text-blue{
   color: var(--blue);
+}
+.global--text-red{
+  color: var(--red);
+}
+.global--text-green{
+  color: var(--green);
 }
 .global--text-link{
   color: var(--blue);
@@ -108,6 +125,12 @@ body {
   border-style:solid;
 }
 
+.global--border-red{
+  border-width:1px;
+  border-color: var(--red);
+  border-style:solid;
+}
+
 .global--2x-border-white{
   border-width:2px;
   border-color: var(--white);
@@ -130,6 +153,10 @@ body {
   border-bottom: 1px solid var(--dark-white);
 }
 
+.global--fill-white{
+  fill: var(--white);
+}
+
 .global--msg-success{
   display: inline-block;
   position: absolute;
@@ -140,4 +167,24 @@ body {
   border: 1px solid green;
   border-radius: 5px;
   color: green;
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+}
+
+@keyframes pulse-avatar {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
 }

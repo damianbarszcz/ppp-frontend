@@ -9,7 +9,12 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         if (!loading && user) {
-            router.replace("/member/home");
+            if(user.account_type == 'P'){
+                router.replace("/member/prospector/home");
+            }
+            else{
+                router.replace("/member/mentor/home");
+            }
         }
     }, [user, loading]);
 

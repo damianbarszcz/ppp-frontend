@@ -10,6 +10,7 @@ import RegisterPanelStep1 from "@/app/auth/register/RegisterPanelStep1";
 import RegisterPanelStep2 from "@/app/auth/register/RegisterPanelStep2";
 import RegisterPanelStep3 from "@/app/auth/register/RegisterPanelStep3";
 import Brand from "@/app/components/ui/Brand";
+import {API_CONFIG} from "@/app/config/global";
 
 export default function RegisterPage()  {
     const router = useRouter();
@@ -73,7 +74,7 @@ export default function RegisterPage()  {
         e.preventDefault();
 
         try {
-            const response = await axios.post("http://localhost:8000/api/auth/register", formData);
+            const response = await axios.post(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.auth.handleRegister}`, formData);
             if (response.data.success) {
                 sessionStorage.setItem('registerMessage', response.data.message);
                 router.push(`/auth/login`);

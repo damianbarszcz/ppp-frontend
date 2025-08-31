@@ -1,15 +1,43 @@
 
 .button{
     padding: 0.85rem 1rem;
-    border-radius: 5px;
+}
+
+.button_primary{
+    background-color: var(--blue);
+    color: var(--white);
 }
 
 .button_light {
     background-color: #F4F8FB;
-    color: #000000;
+    color: var(--dark);
 }
 
 .button_dark {
-    background-color: #161616;
-    color: #ffffff;
+    background-color: var(--dark);
+    color: var(--white);
+}
+
+.button_dark_outline{
+    border: 1px solid var(--silver);
+    color: var(--silver);
+}
+
+.button_blue_outline{
+    border: 1px solid var(--blue);
+    color: var(--blue);
+}
+
+.button_primary:hover{
+    background-color: var(--dark-blue);
+}
+
+.button_dark:hover{
+    background-color: var(--silver);
+}
+
+.button_dark_outline:hover{
+    border: 1px solid var(--silver);
+    background-color: rgba(from var(--silver) r g b / 0.1);
+    color: var(--silver);
 }

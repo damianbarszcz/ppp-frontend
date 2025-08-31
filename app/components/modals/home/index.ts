@@ -1,0 +1,1 @@
+export { default as MentorArticleModal } from './MentorArticleModal';

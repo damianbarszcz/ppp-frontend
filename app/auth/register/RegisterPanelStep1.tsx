@@ -84,7 +84,7 @@ const RegisterPanelStep1: React.FC<RegisterPanelStep1Props> = ({ nextStep, updat
                     />
                 </div>
 
-                <Button type="submit" uiType="light">Kontynuuj</Button>
+                <Button type="submit" uiType="light" size="longSize">Kontynuuj</Button>
             </form>
         </div>
     );

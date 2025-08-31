@@ -13,7 +13,7 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
     validateError: string;
 }
 
-const Textarea: React.FC<TextareaProps> = ({placeholder, type, name, uiType, labelCaption, validateError, required,onChange, isLabel, ...rest })  => {
+const Textarea: React.FC<TextareaProps> = ({placeholder, type, name, uiType, labelCaption, validateError, required,onChange, isLabel, rows, ...rest })  => {
     const inputStyle = uiType === "light" ? styles.input_light : styles.input_dark;
     const labelStyle = uiType === "light" ? styles.label_light : styles.label_dark;
 
@@ -23,6 +23,7 @@ const Textarea: React.FC<TextareaProps> = ({placeholder, type, name, uiType, lab
                 <label htmlFor={name} aria-label={labelCaption} className={`${labelStyle} font-body text-base font-medium mb-2 block`}>
                     {labelCaption}
                 </label> : ''}
+
                 <textarea
                     className={`${styles.input} ${inputStyle} w-full font-body font-medium text-base`}
                     name={name}
@@ -30,9 +31,11 @@ const Textarea: React.FC<TextareaProps> = ({placeholder, type, name, uiType, lab
                     aria-required={required ? "true" : "false"}
                     onChange={onChange}
                     required={required}
-                    rows={6}
+                    rows={rows}
                     {...rest}>
                 </textarea>
+
+                {validateError ? <span className="absolute bottom-[-30px] font-body text-sm global--text-error">{validateError}</span> : ''}
         </div>
 
     )
