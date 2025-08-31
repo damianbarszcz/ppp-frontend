@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { User } from '@/app/types/user.types';
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import {API_CONFIG} from "@/app/config/global";
 
 interface AuthContextType {
     user: User | null;
@@ -28,7 +29,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const res = await axios.get("http://localhost:8000/api/auth/me", {
+                const res = await axios.get(`${API_CONFIG.baseUrl}/api/auth/me`, {
                     withCredentials: true,
                 });
                 setUser(res.data?.user ?? null);
@@ -43,7 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         try {
-            await axios.post("http://localhost:8000/api/auth/logout", {}, { withCredentials: true });
+            await axios.post(`${API_CONFIG.baseUrl}/api/auth/logout`, {}, { withCredentials: true });
             setUser(null);
             router.replace("/auth/login");
         } catch (error) {
