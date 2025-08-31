@@ -10,11 +10,14 @@ import ActionsPanel from "../ActionPanel";
 import ParticipantsPanel from "../ParticipantsPanel";
 import ChatPanel from "../ChatPanel";
 import {Team, ChannelMessage, ActiveParticipant} from "@/app/types";
+import io, { Socket } from "socket.io-client";
 
 export default function SingleChannelPage() {
     const {user, logout} = useAuth();
     const router = useRouter();
     const streamRef = useRef<MediaStream | null>(null);
+    const socketRef = useRef<Socket | null>(null);
+    const peerConnectionsRef = useRef<Map<number, RTCPeerConnection>>(new Map());
     const [accountDropdownOpen,setAccountDropdownOpen] = useState(false);
     const params = useParams();
     const teamUrl = decodeURIComponent(params.slug as string);
@@ -34,6 +37,184 @@ export default function SingleChannelPage() {
     const analyzerRef = useRef<AnalyserNode | null>(null);
     const animationRef = useRef<number | null>(null);
     const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
+
+    const rtcConfig = {
+        iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' }
+        ]
+    };
+
+    useEffect(() => {
+        if (!user?.id || !singleTeam?.id) return;
+
+        socketRef.current = io(`${API_CONFIG.baseUrl.replace('/api', '')}/channel`, {
+            transports: ['websocket', 'polling']
+        });
+
+        const socket = socketRef.current;
+
+        socket.on('connect', () => {
+            console.log('Connected to WebSocket');
+            // Join channel
+            socket.emit('join-channel', {
+                teamId: singleTeam.id,
+                userId: user.id
+            });
+        });
+
+        socket.on('user-joined', (data) => {
+            console.log('User joined:', data.userId);
+        });
+
+        socket.on('user-left', (data) => {
+            console.log('User left:', data.userId);
+            // Remove peer connection and stream
+            const peerConnection = peerConnectionsRef.current.get(data.userId);
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnectionsRef.current.delete(data.userId);
+            }
+            setStreams(prev => {
+                const newStreams = new Map(prev);
+                newStreams.delete(data.userId);
+                return newStreams;
+            });
+        });
+
+        socket.on('participants-updated', (participants) => {
+            getActiveParticipants(participants.users);
+            setParticipantsCount(participants.count);
+        });
+
+        // WebRTC Signaling events
+        socket.on('offer', async (data) => {
+            await handleOffer(data.fromUserId, data.offer);
+        });
+
+        socket.on('answer', async (data) => {
+            await handleAnswer(data.fromUserId, data.answer);
+        });
+
+        socket.on('ice-candidate', async (data) => {
+            await handleIceCandidate(data.fromUserId, data.candidate);
+        });
+
+        // Heartbeat to keep connection alive
+        const heartbeatInterval = setInterval(() => {
+            if (socket.connected) {
+                socket.emit('heartbeat');
+            }
+        }, 30000);
+
+        return () => {
+            clearInterval(heartbeatInterval);
+            socket.emit('leave-channel');
+            socket.disconnect();
+
+            // Close all peer connections
+            peerConnectionsRef.current.forEach(pc => pc.close());
+            peerConnectionsRef.current.clear();
+        };
+    }, [user?.id, singleTeam?.id]);
+
+    // Create peer connection for new user
+    const createPeerConnection = (userId: number) => {
+        const peerConnection = new RTCPeerConnection(rtcConfig);
+
+        // Add local stream to peer connection
+        if (localStream) {
+            localStream.getTracks().forEach(track => {
+                peerConnection.addTrack(track, localStream);
+            });
+        }
+
+        // Handle remote stream
+        peerConnection.ontrack = (event) => {
+            const [remoteStream] = event.streams;
+            setStreams(prev => new Map(prev.set(userId, remoteStream)));
+        };
+
+        // Handle ICE candidates
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate && socketRef.current) {
+                socketRef.current.emit('ice-candidate', {
+                    targetUserId: userId,
+                    candidate: event.candidate
+                });
+            }
+        };
+
+        peerConnectionsRef.current.set(userId, peerConnection);
+        return peerConnection;
+    };
+
+    // Handle incoming offer
+    const handleOffer = async (fromUserId: number, offer: RTCSessionDescriptionInit) => {
+        const peerConnection = createPeerConnection(fromUserId);
+
+        try {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+
+            if (socketRef.current) {
+                socketRef.current.emit('answer', {
+                    targetUserId: fromUserId,
+                    answer: answer
+                });
+            }
+        } catch (error) {
+            console.error('Error handling offer:', error);
+        }
+    };
+
+    // Handle incoming answer
+    const handleAnswer = async (fromUserId: number, answer: RTCSessionDescriptionInit) => {
+        const peerConnection = peerConnectionsRef.current.get(fromUserId);
+        if (peerConnection) {
+            try {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+            } catch (error) {
+                console.error('Error handling answer:', error);
+            }
+        }
+    };
+
+    // Handle incoming ICE candidate
+    const handleIceCandidate = async (fromUserId: number, candidate: RTCIceCandidateInit) => {
+        const peerConnection = peerConnectionsRef.current.get(fromUserId);
+        if (peerConnection) {
+            try {
+                await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+            } catch (error) {
+                console.error('Error handling ICE candidate:', error);
+            }
+        }
+    };
+
+    // Create offers for all existing users when local stream changes
+    const createOffersForAllUsers = async () => {
+        if (!localStream || !socketRef.current) return;
+
+        activeParticipants.forEach(async (participant) => {
+            if (participant.id !== user?.id) {
+                const peerConnection = createPeerConnection(participant.id);
+
+                try {
+                    const offer = await peerConnection.createOffer();
+                    await peerConnection.setLocalDescription(offer);
+
+                    socketRef.current?.emit('offer', {
+                        targetUserId: participant.id,
+                        offer: offer
+                    });
+                } catch (error) {
+                    console.error('Error creating offer:', error);
+                }
+            }
+        });
+    };
 
     useEffect(() => {
         const fetchSingleTeam = async () : Promise<void> => {
@@ -70,50 +251,6 @@ export default function SingleChannelPage() {
         const interval = setInterval(fetchMessages, 5000);
         return () => clearInterval(interval);
 
-    }, [singleTeam?.id]);
-
-    useEffect(() => {
-        const joinChannel = async () => {
-            if (!singleTeam?.id || !user?.id) return;
-
-            try {
-                await axios.post(`${API_CONFIG.baseUrl}/api/channel/team/join/${singleTeam.id}/${user.id}`);
-            } catch (error) {
-                console.error('Błąd dołączania do kanału:', error);
-            }
-        };
-
-        joinChannel();
-
-        return () => {
-            if (singleTeam?.id && user?.id) {
-                axios.post(`${API_CONFIG.baseUrl}/api/channel/team/leave/${singleTeam.id}/${user.id}`)
-                    .catch(console.error);
-            }
-        };
-    }, [singleTeam?.id, user?.id]);
-
-    useEffect(() => {
-        const fetchActiveParticipants = async () : Promise<void>  => {
-            if (!singleTeam?.id) return;
-
-            try {
-                const response = await axios.get(
-                    `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.channel.fetchActiveParticipants + singleTeam.id}`
-                );
-                if (response.data.success) {
-                    getActiveParticipants(response.data.data);
-                    setParticipantsCount(response.data.count);
-                }
-            } catch (error) {
-                console.error('Błąd pobierania uczestników:', error);
-            }
-        };
-
-        fetchActiveParticipants();
-
-        const interval = setInterval(fetchActiveParticipants, 10000);
-        return () => clearInterval(interval);
     }, [singleTeam?.id]);
 
     const setupSpeakingDetection = (stream: MediaStream) => {
@@ -187,6 +324,16 @@ export default function SingleChannelPage() {
         if (streamRef.current) {
             streamRef.current.getTracks().forEach(track => track.stop());
         }
+
+        // Cleanup WebSocket and WebRTC
+        if (socketRef.current) {
+            socketRef.current.emit('leave-channel');
+            socketRef.current.disconnect();
+        }
+
+        peerConnectionsRef.current.forEach(pc => pc.close());
+        peerConnectionsRef.current.clear();
+
         router.push('/member/prospector/teams');
     };
 
@@ -307,6 +454,9 @@ export default function SingleChannelPage() {
 
                 setupSpeakingDetection(stream);
 
+                // Create offers for all existing users
+                await createOffersForAllUsers();
+
                 console.log('Kamera włączona z audio');
             } catch (error) {
                 console.error('Błąd dostępu do kamery:', error);
@@ -331,8 +481,18 @@ export default function SingleChannelPage() {
         }
     }, [isMuted, localStream]);
 
+    // Cleanup on component unmount
     useEffect(() => {
+        const handleBeforeUnload = () => {
+            if (socketRef.current) {
+                socketRef.current.emit('leave-channel');
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
         return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
             cleanupSpeakingDetection();
             if (localStream) {
                 localStream.getTracks().forEach(track => track.stop());
@@ -340,8 +500,12 @@ export default function SingleChannelPage() {
             if (audioStream) {
                 audioStream.getTracks().forEach(track => track.stop());
             }
+            if (socketRef.current) {
+                socketRef.current.disconnect();
+            }
+            peerConnectionsRef.current.forEach(pc => pc.close());
         };
-    }, []);
+    }, [localStream, audioStream]);
 
     return (
         <ProtectedRoute>
@@ -366,7 +530,7 @@ export default function SingleChannelPage() {
                         streams={streams}
                         isVideoOn={isVideoOn}
                         isMuted={isMuted}
-                        isSpeaking={isSpeaking} // DODANE
+                        isSpeaking={isSpeaking}
                     />
                     <ChatPanel
                         messages={messages}
