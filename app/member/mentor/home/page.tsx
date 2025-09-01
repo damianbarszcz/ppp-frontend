@@ -8,6 +8,7 @@ import Navigation from "@/app/components/navigation/Navigation";
 import Message from "@/app/components/ui/Message";
 import MentorFinderProperties from "@/app/components/mentor-finder/MentorFinderProperties";
 import MentorFinderArticles from "@/app/components/mentor-finder/MentorFinderArticles";
+import {MentorArticleModal} from "@/app/components/modals";
 
 export default function HomePage() {
     const {user, logout} = useAuth();
@@ -16,6 +17,8 @@ export default function HomePage() {
     const [articles, setArticles] = useState([]);
     const [followers, setFollowers] = useState([]);
     const [msgSuccess, setMsgSuccess] = useState('');
+    const [selectedPost, setSelectedPost] = useState<any>(null);
+    const [isArticleModalOpen, setArticleModalOpen] = useState(false);
 
     useEffect(() : void => {
         const msgSuccessBox = sessionStorage.getItem('articleSuccessMessage');
@@ -52,6 +55,16 @@ export default function HomePage() {
         fetchArticles();
     }, [user]);
 
+    const openArticleModal = (post: any) => {
+        setSelectedPost(post);
+        setArticleModalOpen(true);
+    };
+
+    const closeArticleModal = () => {
+        setArticleModalOpen(false);
+        setSelectedPost(null);
+    };
+
     return (
         <ProtectedRoute>
             { msgSuccess && ( <Message message ={msgSuccess} type="success" /> )}
@@ -69,8 +82,12 @@ export default function HomePage() {
 
             <main className="w-full pb-[100px]">
                 <MentorFinderProperties mentor={user!} articles={articles} followers={followers} />
-                <MentorFinderArticles mentor={user!} articles={articles} />
+                <MentorFinderArticles mentor={user!} articles={articles} openArticleModal = {openArticleModal} />
             </main>
+
+            { (isArticleModalOpen && selectedPost) && (
+                <MentorArticleModal closeArticleModal = {closeArticleModal} selectedPost = {selectedPost} />
+            )}
         </ProtectedRoute>
     );
 }

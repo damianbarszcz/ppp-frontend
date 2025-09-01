@@ -15,23 +15,104 @@ interface ParticipantsPanelProps {
 }
 
 const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
-   activeParticipants = [],
-   participantsCount,
-   localStream = null,
-   streams = new Map(),
-   isVideoOn = false,
-   isMuted = true,
-   isSpeaking = false
-}: ParticipantsPanelProps) => {
+                                                                 activeParticipants = [],
+                                                                 participantsCount,
+                                                                 localStream = null,
+                                                                 streams = new Map(),
+                                                                 isVideoOn = false,
+                                                                 isMuted = true,
+                                                                 isSpeaking = false
+                                                             }: ParticipantsPanelProps) => {
 
     const { user } = useAuth();
     const localVideoRef = useRef<HTMLVideoElement>(null);
+    const remoteVideoRefs = useRef<Map<number, HTMLVideoElement>>(new Map());
 
+    // Debugowanie - sprawdź co otrzymuje komponent
     useEffect(() => {
+        console.log('ParticipantsPanel - localStream:', localStream);
+        console.log('ParticipantsPanel - isVideoOn:', isVideoOn);
+        console.log('ParticipantsPanel - streams size:', streams.size);
+        console.log('ParticipantsPanel - activeParticipants count:', activeParticipants.length);
+
+        if (localStream) {
+            console.log('ParticipantsPanel - localStream tracks:', localStream.getTracks());
+            console.log('ParticipantsPanel - video tracks:', localStream.getVideoTracks());
+            console.log('ParticipantsPanel - audio tracks:', localStream.getAudioTracks());
+        }
+    }, [localStream, isVideoOn, streams, activeParticipants]);
+
+    // Effect do obsługi lokalnego video
+    useEffect(() => {
+        console.log('Local video effect triggered');
+
         if (localVideoRef.current && localStream) {
+            console.log('Setting localStream to video element');
             localVideoRef.current.srcObject = localStream;
+
+            localVideoRef.current.onloadedmetadata = () => {
+                console.log('Local video metadata loaded');
+                console.log('Video dimensions:', localVideoRef.current?.videoWidth, 'x', localVideoRef.current?.videoHeight);
+            };
+
+            localVideoRef.current.onloadeddata = () => {
+                console.log('Local video data loaded');
+            };
+
+            localVideoRef.current.onerror = (error) => {
+                console.error('Local video error:', error);
+            };
+
+            localVideoRef.current.oncanplay = () => {
+                console.log('Local video can play');
+            };
+
+            localVideoRef.current.play().catch(error => {
+                console.error('Error playing local video:', error);
+            });
+        } else {
+            console.log('Local video ref or stream not available:', {
+                ref: !!localVideoRef.current,
+                stream: !!localStream
+            });
         }
     }, [localStream]);
+
+    // Effect do obsługi zdalnych video
+    useEffect(() => {
+        console.log('Remote streams effect triggered, streams count:', streams.size);
+
+        streams.forEach((stream, userId) => {
+            const videoElement = remoteVideoRefs.current.get(userId);
+            console.log(`Processing stream for user ${userId}, video element exists:`, !!videoElement);
+
+            if (videoElement && videoElement.srcObject !== stream) {
+                console.log(`Setting remote stream for user ${userId}`);
+                videoElement.srcObject = stream;
+
+                videoElement.onloadedmetadata = () => {
+                    console.log(`Remote video metadata loaded for user ${userId}`);
+                };
+
+                videoElement.onerror = (error) => {
+                    console.error(`Remote video error for user ${userId}:`, error);
+                };
+
+                videoElement.play().catch(error => {
+                    console.error(`Error playing remote video for user ${userId}:`, error);
+                });
+            }
+        });
+
+        // Wyczyść referencje do usuniętych użytkowników
+        const currentUserIds = new Set(Array.from(streams.keys()));
+        Array.from(remoteVideoRefs.current.keys()).forEach(userId => {
+            if (!currentUserIds.has(userId)) {
+                console.log(`Removing video ref for user ${userId}`);
+                remoteVideoRefs.current.delete(userId);
+            }
+        });
+    }, [streams]);
 
     const renderParticipant = (participant: ActiveParticipant, index: number) => {
         const initials = getInitials(participant.profile.name, participant.profile.surname);
@@ -42,33 +123,88 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
         const hasVideo = isCurrentUser ? (!!localStream && isVideoOn) : streams.has(participant.id);
         const isUserSpeaking = isCurrentUser ? (isSpeaking && !isMuted) : false;
 
+        console.log(`Rendering participant ${participant.id}, isCurrentUser: ${isCurrentUser}, hasVideo: ${hasVideo}`);
+
         return (
             <div key={participant.id || index}
-                 className={`relative bg-black rounded-md overflow-hidden transition-all duration-200 ${isUserSpeaking
+                 className={`relative bg-black rounded-lg overflow-hidden transition-all duration-500 ease-in-out transform hover:scale-105 ${isUserSpeaking
                      ? 'ring-4 ring-green-400 ring-opacity-80 shadow-lg shadow-green-400/50'
                      : ''
-                 }`} style={{animation: isUserSpeaking ? 'pulse-border 1.5s ease-in-out infinite' : 'none'}}>
+                 }`}
+                 style={{
+                     animation: isUserSpeaking ? 'pulse-border 1.5s ease-in-out infinite' : 'none',
+                     minHeight: '200px' // Zapewnia minimalną wysokość
+                 }}>
 
                 {hasVideo ? (
-                    <div className={`aspect-video bg-black relative transition-all duration-200 ${isUserSpeaking ? 'border-2 border-green-400' : ''}`}>
+                    <div className={`w-full h-full relative transition-all duration-500 ease-in-out ${isUserSpeaking ? 'border-2 border-green-400' : ''}`}>
                         {isCurrentUser ? (
-                            <video ref={localVideoRef} autoPlay muted={true} playsInline className="w-full h-full object-cover" style={{ transform: 'scaleX(-1)' }}/>
+                            <video
+                                ref={localVideoRef}
+                                autoPlay
+                                muted
+                                playsInline
+                                className="w-full h-full object-cover rounded-lg transition-all duration-300"
+                                style={{
+                                    transform: "scaleX(-1)",
+                                    aspectRatio: "16/9" // Wymusza proporcje 16:9
+                                }}
+                                onError={(e) => {
+                                    console.error('Local video element error:', e);
+                                }}
+                                onLoadedData={() => {
+                                    console.log('Local video element loaded data');
+                                }}
+                            />
                         ) : (
-                            <video autoPlay playsInline className="w-full h-full object-cover"/>
+                            <video
+                                autoPlay
+                                playsInline
+                                className="w-full h-full object-cover rounded-lg transition-all duration-300"
+                                style={{
+                                    aspectRatio: "16/9" // Wymusza proporcje 16:9
+                                }}
+                                ref={(el) => {
+                                    if (el) {
+                                        console.log(`Setting video ref for user ${participant.id}`);
+                                        remoteVideoRefs.current.set(participant.id, el);
+
+                                        if (streams.has(participant.id)) {
+                                            const stream = streams.get(participant.id)!;
+                                            console.log(`Immediately setting stream for user ${participant.id}:`, stream.getTracks());
+                                            el.srcObject = stream;
+
+                                            el.onloadeddata = () => {
+                                                console.log(`Remote video loaded data for user ${participant.id}`);
+                                            };
+
+                                            el.play().catch(error => {
+                                                console.error(`Error playing remote video for user ${participant.id}:`, error);
+                                            });
+                                        }
+                                    } else {
+                                        console.log(`Removing video ref for user ${participant.id}`);
+                                        remoteVideoRefs.current.delete(participant.id);
+                                    }
+                                }}
+                                onError={(e) => {
+                                    console.error(`Remote video element error for user ${participant.id}:`, e);
+                                }}
+                            />
                         )}
                     </div>
                 ) : (
-                    <div className="aspect-video bg-black flex items-center justify-center">
-                        <figure
-                            className={`relative h-24 w-24 rounded-full transition-all duration-200 ${
-                                isUserSpeaking ? 'ring-4 ring-green-400 ring-opacity-80 scale-110' : ''
-                            }`}
-                            style={{
-                                backgroundColor: participant.profile.user_avatar_color,
-                                animation: isUserSpeaking ? 'pulse-avatar 1.5s ease-in-out infinite' : 'none'
-                            }}
-                        >
-                            <span className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-semibold text-2xl ${textColorClass}`}>
+                    <div className="w-full h-full bg-black flex items-center justify-center rounded-lg transition-all duration-300" style={{ aspectRatio: "16/9" }}>
+                        <figure className={`relative rounded-full transition-all duration-300 ${
+                            isUserSpeaking ? 'ring-4 ring-green-400 ring-opacity-80 scale-110' : ''}`}
+                                style={{
+                                    backgroundColor: participant.profile.user_avatar_color,
+                                    animation: isUserSpeaking ? 'pulse-avatar 1.5s ease-in-out infinite' : 'none',
+                                    width: getAvatarSize(participantsCount),
+                                    height: getAvatarSize(participantsCount)
+                                }}>
+
+                            <span className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-semibold ${getTextSize(participantsCount)} ${textColorClass}`}>
                                 {initials}
                             </span>
                         </figure>
@@ -76,7 +212,7 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
                 )}
 
                 {/* Nazwa uczestnika z speaking indicator */}
-                <div className={`absolute bottom-2 left-2 px-2 py-1 rounded transition-all duration-200 ${
+                <div className={`absolute bottom-2 left-2 px-2 py-1 rounded-md transition-all duration-200 backdrop-blur-sm ${
                     isUserSpeaking
                         ? 'bg-green-600 bg-opacity-90 shadow-lg'
                         : 'bg-black bg-opacity-60'
@@ -94,8 +230,9 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
                     </span>
                 </div>
 
+                {/* Status indicators */}
                 <div className="absolute top-2 right-2 flex gap-1">
-                    <div className={`p-1 rounded-full transition-all duration-200 ${
+                    <div className={`p-1.5 rounded-full transition-all duration-200 backdrop-blur-sm ${
                         hasVideo ? 'bg-green-500 shadow-lg shadow-green-500/50' : 'bg-gray-500'
                     }`}>
                         <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24" fill="white">
@@ -107,7 +244,7 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
                         </svg>
                     </div>
 
-                    <div className={`p-1 rounded-full transition-all duration-200 ${
+                    <div className={`p-1.5 rounded-full transition-all duration-200 backdrop-blur-sm ${
                         isCurrentUser && !isMuted
                             ? isUserSpeaking
                                 ? 'bg-green-500 shadow-lg shadow-green-500/50 animate-pulse'
@@ -127,23 +264,91 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
         );
     };
 
+    // Funkcje pomocnicze do responsywnych rozmiarów
     const getGridLayout = () => {
         if (participantsCount === 1) return "grid-cols-1";
-        if (participantsCount === 2) return "grid-cols-2";
-        if (participantsCount <= 4) return "grid-cols-2 grid-rows-2";
-        if (participantsCount <= 6) return "grid-cols-3 grid-rows-2";
-        return "grid-cols-3 grid-rows-3";
+        if (participantsCount === 2) return "grid-cols-1 lg:grid-cols-2";
+        if (participantsCount <= 4) return "grid-cols-1 md:grid-cols-2";
+        if (participantsCount <= 6) return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+        if (participantsCount <= 9) return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+    };
+
+    const getAvatarSize = (count: number) => {
+        if (count === 1) return "120px";
+        if (count === 2) return "100px";
+        if (count <= 4) return "80px";
+        if (count <= 6) return "60px";
+        return "50px";
+    };
+
+    const getTextSize = (count: number) => {
+        if (count === 1) return "text-4xl";
+        if (count === 2) return "text-3xl";
+        if (count <= 4) return "text-2xl";
+        if (count <= 6) return "text-xl";
+        return "text-lg";
     };
 
     return (
         <section className="w-full col-span-9 row-span-11">
-            <div className="w-full h-full bg-gray-900 rounded-md overflow-hidden relative p-4">
-                <div className={`grid gap-4 h-full ${getGridLayout()}`}>
-                    {activeParticipants.slice(0, 9).map((participant, index) =>
+            <div className="w-full h-full bg-gray-900 rounded-lg overflow-hidden relative p-4">
+                {/* Grid z smooth transitions */}
+                <div className={`grid gap-4 h-full transition-all duration-700 ease-in-out auto-rows-fr ${getGridLayout()}`}>
+                    {activeParticipants.slice(0, 12).map((participant, index) =>
                         renderParticipant(participant, index)
                     )}
                 </div>
+
+                {/* Informacja o liczbie uczestników */}
+                {participantsCount > 12 && (
+                    <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded-lg">
+                        <span className="text-sm">+{participantsCount - 12} więcej uczestników</span>
+                    </div>
+                )}
+
+                {/* Debug info - usuń to w produkcji */}
+                <div className="absolute top-0 left-0 bg-black bg-opacity-70 text-white p-2 text-xs rounded-br-lg">
+                    <div>Local stream: {localStream ? 'YES' : 'NO'}</div>
+                    <div>Video on: {isVideoOn ? 'YES' : 'NO'}</div>
+                    <div>Participants: {activeParticipants.length}</div>
+                    <div>Streams: {streams.size}</div>
+                    {localStream && (
+                        <div>
+                            Tracks: {localStream.getTracks().length}
+                            (V: {localStream.getVideoTracks().length},
+                            A: {localStream.getAudioTracks().length})
+                        </div>
+                    )}
+                </div>
             </div>
+
+            {/* Dodaj CSS animations */}
+            <style jsx>{`
+                @keyframes pulse-border {
+                    0%, 100% { 
+                        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+                    }
+                    50% { 
+                        box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+                    }
+                }
+                
+                @keyframes pulse-avatar {
+                    0%, 100% { 
+                        transform: scale(1);
+                        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+                    }
+                    50% { 
+                        transform: scale(1.05);
+                        box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+                    }
+                }
+
+                .auto-rows-fr {
+                    grid-auto-rows: 1fr;
+                }
+            `}</style>
         </section>
     );
 };

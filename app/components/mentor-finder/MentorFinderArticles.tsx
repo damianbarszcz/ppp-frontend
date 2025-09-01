@@ -1,35 +1,24 @@
-import React, {useState} from "react";
+import React from "react";
 import {Mentor} from '@/app/types/user.types';
-import {MentorArticleModal} from "@/app/components/modals";
+import {Article} from "@/app/types";
 
 interface MentorProfileArticlesProps{
     mentor: Mentor,
+    openArticleModal: (articles:Article) => void;
     articles: any[];
 }
 
 const MentorFinderArticles : React.FC<MentorProfileArticlesProps> = ({
    mentor,
    articles,
+   openArticleModal
 } : MentorProfileArticlesProps) => {
-
-    const [selectedPost, setSelectedPost] = useState<any>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const openPostModal = (post: any) => {
-        setSelectedPost(post);
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setSelectedPost(null);
-    };
 
     return (
         <section className="transform -translate-y-[60px]">
             <div className="w-full max-w-6xl mx-auto  flex justify-between items-center">
                 <div className="pl-5 pr-5 relative transform -translate-y-[50px]">
-                    <span className="text-base font-body font-bold  global--text-link">Artykuły</span>
+                    <span className="text-base font-bold  global--text-link">Artykuły</span>
                     <div className="w-full absolute h-1  left-0 global--bg-blue transform translate-y-3"></div>
                 </div>
             </div>
@@ -41,7 +30,7 @@ const MentorFinderArticles : React.FC<MentorProfileArticlesProps> = ({
                             {articles.map((article : any) => (
                                 <div key={article.id} className="relative aspect-[4/5] bg-cover bg-center bg-gray-200 cursor-pointer rounded-md"
                                      style={{backgroundImage: article.thumbnail_url ? `url(${article.thumbnail_url})` : undefined}}
-                                     onClick={() => openPostModal(article)}>
+                                     onClick={() => openArticleModal(article)}>
                                     <div className="absolute inset-0 p-4 flex flex-col rounded-md justify-end" style={{backgroundColor: `${mentor.profile.user_avatar_color}30`}}>
                                         <div className="p-4 rounded-md" style={{backgroundColor: `${mentor.profile.user_avatar_color}95`}}>
                                             <h3 className="font-body global--text-black font-semibold text-xl mb-2 leading-tight">
@@ -62,10 +51,6 @@ const MentorFinderArticles : React.FC<MentorProfileArticlesProps> = ({
                     </div>
                 )}
             </div>
-
-            {isModalOpen && selectedPost && (
-                <MentorArticleModal closeModal = {closeModal} selectedPost = {selectedPost} />
-            )}
         </section>
     );
 }

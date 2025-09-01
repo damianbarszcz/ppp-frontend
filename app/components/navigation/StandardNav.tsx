@@ -151,7 +151,7 @@ function StandardNav({
 
                     {user?.account_type === "P" && (
                         <>
-                        <a href="/member/prospector/search-creator" className="hidden block p-2 mr-6 global--border-blue rounded-sm
+                        <a href="/member/prospector/search-creator" className="block p-2 mr-6 global--border-blue rounded-sm
                         text-sm font-body font-semibold global--text-link" target="_self">Kreator Poszukiwań</a>
 
 

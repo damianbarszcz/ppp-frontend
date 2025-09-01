@@ -14,6 +14,7 @@ const AddContactModal: React.FC<{
     setContactModalOpen,
     handleAddContact,
     getFieldError,
+
 }) => {
 
     return (

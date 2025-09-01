@@ -3,12 +3,12 @@ import {Article} from "@/app/types/article.types";
 
 
 const MentorArticleModal: React.FC<{
-    closeModal: () => void;
     selectedPost : Article;
-}> = ({ closeModal,selectedPost }) => {
+    closeArticleModal: () => void;
+}> = ({ selectedPost, closeArticleModal}) => {
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4" onClick={closeModal}>
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4" onClick={() =>  closeArticleModal()}>
             <div className="bg-white rounded-lg w-full max-w-[1750px] max-h-[95vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 <div className="relative p-20">
                     <div className="max-w-[1024px] pb-5 m-auto">
@@ -23,7 +23,7 @@ const MentorArticleModal: React.FC<{
                         />
                     </div>
 
-                    <button onClick={closeModal} className="absolute top-4 right-4 bg-white rounded-full p-2 text-gray-700 shadow-lg">
+                    <button onClick={() =>  closeArticleModal()} className="absolute top-4 right-4 bg-white rounded-full p-2 text-gray-700 shadow-lg">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>

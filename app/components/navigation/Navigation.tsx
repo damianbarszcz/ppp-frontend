@@ -35,7 +35,7 @@ function Navigation({
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (searchValue.trim() !== "") {
-            router.push(`/member/mentor/mentor-finder?username=${encodeURIComponent(searchValue.trim())}`);
+            router.push(`/member/prospector/mentor-search?username=${encodeURIComponent(searchValue.trim())}`);
         }
     };
 

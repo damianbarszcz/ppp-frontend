@@ -11,13 +11,15 @@ import MentorFinderProperties from "@/app/components/mentor-finder/MentorFinderP
 import MentorFinderArticles from "@/app/components/mentor-finder/MentorFinderArticles";
 import MentorFinderActions from "@/app/components/mentor-finder/MentorFinderActions";
 import {loadStripe} from "@stripe/stripe-js";
+import {MentorArticleModal} from "@/app/components/modals";
 
 export default function MentorSearchPage() {
     const {user, logout} = useAuth();
     const [mentor, setMentor] = useState<Mentor>();
     const [accountDropdownOpen,setAccountDropdownOpen] = useState(false);
     const [notifyDropdownOpen, setNotifyDropdownOpen] = useState(false);
-
+    const [selectedPost, setSelectedPost] = useState<any>(null);
+    const [isArticleModalOpen, setArticleModalOpen] = useState(false);
     const searchParams = useSearchParams();
     const username = searchParams.get("username");
     const [isFollowing, setIsFollowing] = useState(false);
@@ -82,6 +84,16 @@ export default function MentorSearchPage() {
         }
     };
 
+    const openArticleModal = (post: any) => {
+        setSelectedPost(post);
+        setArticleModalOpen(true);
+    };
+
+    const closeArticleModal = () => {
+        setArticleModalOpen(false);
+        setSelectedPost(null);
+    };
+
     return (
         <ProtectedRoute>
             <Navigation
@@ -95,13 +107,22 @@ export default function MentorSearchPage() {
                 type="standard"
             />
 
-            {mentor && (
-                <main className="w-full pb-[100px]">
-                    <MentorFinderProperties mentor={mentor!} articles={mentor.articles} followers={mentor.followers} />
-                    <MentorFinderActions isFollowing={isFollowing} onFollowToggle={handleFollowToggle} onSubscribe={handleSubscribe} />
-                    <MentorFinderArticles mentor={mentor!} articles={mentor.articles} />
-                </main>
-            )}
+            {mentor ? (
+                <>
+                    <main className="w-full pb-[100px]">
+                        <MentorFinderProperties mentor={mentor!} articles={mentor.articles} followers={mentor.followers} />
+                        <MentorFinderActions isFollowing={isFollowing} onFollowToggle={handleFollowToggle} onSubscribe={handleSubscribe} />
+                        <MentorFinderArticles mentor={mentor!} articles={mentor.articles} openArticleModal = {openArticleModal} />
+                    </main>
+
+                    { (isArticleModalOpen && selectedPost) && (
+                        <MentorArticleModal closeArticleModal = {closeArticleModal} selectedPost = {selectedPost} />
+                    )}
+                </>
+            ) : (
+                    <div>Podany użytkownik nie istnieje</div>
+                )
+            }
         </ProtectedRoute>
     );
 }

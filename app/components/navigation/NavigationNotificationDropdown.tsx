@@ -6,6 +6,7 @@ import {Notification} from "@/app/types";
 import {getInitials} from "@/app/components/utils/avatar";
 import {isDarkColor} from "@/app/components/utils/color";
 
+
 function NavigationNotificationDropdown() {
     const {user} = useAuth();
     const [yourNotifications, setYourNotifications] = useState<Notification[]>([]);
