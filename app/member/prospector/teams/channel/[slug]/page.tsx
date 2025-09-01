@@ -158,7 +158,19 @@ export default function SingleChannelPage() {
 
     // Handle incoming offer
     const handleOffer = useCallback(async (fromUserId: number, offer: RTCSessionDescriptionInit) => {
-        console.log('Handling offer from user:', fromUserId);
+        console.log('Handling offer from user:', fromUserId, 'offer:', offer);
+
+        // WALIDACJA - sprawdź czy offer nie jest null/undefined
+        if (!offer || !offer.type || !offer.sdp) {
+            console.error('Invalid offer received:', offer);
+            return;
+        }
+
+        // Sprawdź czy offer.type ma prawidłową wartość
+        if (offer.type !== 'offer') {
+            console.error('Invalid offer type:', offer.type);
+            return;
+        }
 
         const peerConnection = createPeerConnection(fromUserId);
 
