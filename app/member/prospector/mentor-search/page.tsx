@@ -1,5 +1,5 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, Suspense} from "react";
 import axios from "axios";
 import {API_CONFIG} from "@/app/config/global";
 import { useAuth } from "@/app/context/AuthContext";
@@ -13,7 +13,17 @@ import MentorFinderActions from "@/app/components/mentor-finder/MentorFinderActi
 import {loadStripe} from "@stripe/stripe-js";
 import {MentorArticleModal} from "@/app/components/modals";
 
-export default function MentorSearchPage() {
+// Loading component
+function SearchLoading() {
+    return (
+        <div className="flex justify-center items-center min-h-screen">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+        </div>
+    );
+}
+
+// Główny komponent z useSearchParams
+function MentorSearchContent() {
     const {user, logout} = useAuth();
     const [mentor, setMentor] = useState<Mentor>();
     const [accountDropdownOpen,setAccountDropdownOpen] = useState(false);
@@ -120,9 +130,17 @@ export default function MentorSearchPage() {
                     )}
                 </>
             ) : (
-                    <div>Podany użytkownik nie istnieje</div>
-                )
+                <div>Podany użytkownik nie istnieje</div>
+            )
             }
         </ProtectedRoute>
+    );
+}
+
+export default function MentorSearchPage() {
+    return (
+        <Suspense fallback={<SearchLoading />}>
+            <MentorSearchContent />
+        </Suspense>
     );
 }
