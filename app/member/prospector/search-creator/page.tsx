@@ -14,7 +14,7 @@ import SearchCreatorFinal from "@/app/member/prospector/search-creator/SearchCre
 
 export default function SearchCreatorPage() {
     const { user, logout } = useAuth();
-    const [ dropdownOpen, setDropdownOpen] = useState(false);
+    const [accountDropdownOpen,setAccountDropdownOpen] = useState(false);
     const [notifyDropdownOpen, setNotifyDropdownOpen] = useState(false);
     const [stage, setStage] = useState(7);
     const [formData, setFormData] = useState({
@@ -37,8 +37,8 @@ export default function SearchCreatorPage() {
                         activeSection=""
                         user = {user!}
                         handleLogout={logout}
-                        dropdownOpen = {dropdownOpen}
-                        setDropdownOpen={setDropdownOpen}
+                        accountDropdownOpen = {accountDropdownOpen}
+                        setAccountDropdownOpen={setAccountDropdownOpen}
                         notifyDropdownOpen = {notifyDropdownOpen}
                         setNotifyDropdownOpen={setNotifyDropdownOpen}
                         type="standard"
