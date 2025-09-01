@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { API_CONFIG } from "@/app/config/global";
@@ -7,7 +7,15 @@ import PaymentProcessSuccess from "@/app/member/mentor/manage-plan/payment-proce
 import PaymentProcessLoading from "@/app/member/mentor/manage-plan/payment-process/PaymentProcessLoading";
 import PaymentProcessError from "@/app/member/mentor/manage-plan/payment-process/PaymentProcessError";
 
-export default function PaymentProcessPage() {
+function ProcessLoading() {
+    return (
+        <div className="flex justify-center items-center min-h-screen">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+        </div>
+    );
+}
+
+function PaymentProcessContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -46,5 +54,13 @@ export default function PaymentProcessPage() {
             { status === 'error' && ( <PaymentProcessError  handleGoBack = { handleGoBack } /> )}
             { status === 'success' && ( <PaymentProcessSuccess  handleGoBack = { handleGoBack } /> )}
         </main>
+    );
+}
+
+export default function PaymentProcessPage() {
+    return (
+        <Suspense fallback={<ProcessLoading />}>
+            <PaymentProcessContent />
+        </Suspense>
     );
 }
