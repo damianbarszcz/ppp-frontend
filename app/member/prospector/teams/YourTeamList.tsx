@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "@/app/components/ui/Button";
 
-interface ChannelListProps {
+interface YourTeamListProps {
     teams: any[];
     setTeamModalOpen: (open: boolean) => void;
 }
@@ -12,7 +12,7 @@ export function getInitials(channelTitle: string): string {
     return words.length > 1 ? words[0][0] + words[1][0] : channelTitle.slice(0, 2);
 }
 
-const YourTeamList: React.FC<ChannelListProps> = ({ teams,setTeamModalOpen } : ChannelListProps) => {
+const YourTeamList: React.FC<YourTeamListProps> = ({ teams,setTeamModalOpen } : YourTeamListProps) => {
     return (
         <section className="w-full">
             <div className="m-auto max-w-6xl">

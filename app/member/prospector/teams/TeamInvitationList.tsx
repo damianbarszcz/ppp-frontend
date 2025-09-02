@@ -2,7 +2,6 @@ import React from "react";
 import {Team} from "@/app/types";
 import Button from "@/app/components/ui/Button";
 
-
 interface TeamInvitationListProps {
     invitations: Team[];
     receivedInvitations: Team[];
@@ -69,9 +68,11 @@ const TeamInvitationsList: React.FC<TeamInvitationListProps> = ({
                                                 </p>
                                             </div>
 
-                                            <div className="mt-6 flex gap-2 justify-center">
-                                                <Button type="button" uiType="primary" size="extraSmallSize" onClick={() => handleAcceptInvitation(team.id)}>Akceptuj</Button>
-                                                <Button type="button" uiType="dark" size="extraSmallSize" onClick={() => handleRejectInvitation(team.id)}>Usuń</Button>
+                                            <div className="mt-6 flex justify-end">
+                                                <div className="flex justify-center gap-2 max-w-[200px]">
+                                                    <Button type="button" uiType="primary" size="extraSmallSize" onClick={() => handleAcceptInvitation(team.id)}>Akceptuj</Button>
+                                                    <Button type="button" uiType="dark" size="extraSmallSize" onClick={() => handleRejectInvitation(team.id)}>Usuń</Button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

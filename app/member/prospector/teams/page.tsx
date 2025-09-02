@@ -5,57 +5,12 @@ import ProtectedRoute from '@/app/routes/protected/ProtectedRoute';
 import Navigation from "@/app/components/navigation/Navigation";
 import axios from "axios";
 import {API_CONFIG} from "@/app/config/global";
-import {Contact, ValidationError} from "@/app/types";
+import {Contact, ValidationError,TeamInvitation} from "@/app/types";
 import TeamManager from "@/app/member/prospector/teams/TeamManager";
 import YourTeamList from "@/app/member/prospector/teams/YourTeamList";
 import Message from "@/app/components/ui/Message";
 import TeamInvitationsList from "@/app/member/prospector/teams/TeamInvitationList";
 import {AddTeamModal} from "@/app/components/modals";
-
-// Dodaj typ dla TeamInvitation
-interface TeamInvitation {
-    id: number;
-    team_id: number;
-    invited_user_id: number;
-    inviter_user_id: number;
-    status: 'pending' | 'accepted' | 'rejected';
-    team: {
-        id: number;
-        title: string;
-        slug: string;
-        team_details: {
-            description: string;
-            tags: string[];
-            team_avatar_color: string;
-        }
-    };
-    inviter?: {
-        id: number;
-        profile: {
-            name: string;
-            surname: string;
-            username: string;
-        }
-    };
-    created_at: string;
-}
-
-// Dodaj typ dla powiadomienia o zespole
-interface TeamNotification {
-    id: number;
-    message: string;
-    sender: {
-        id: number;
-        email: string;
-        profile: {
-            name: string;
-            surname: string;
-            username: string;
-            user_avatar_color: string;
-        }
-    };
-    created_at: string;
-}
 
 export default function TeamsPage() {
     const {user, logout} = useAuth();
@@ -170,7 +125,6 @@ export default function TeamsPage() {
                 user_id: user.id
             });
             if (response.data.success) {
-                // Odśwież listę zaproszeń
                 const updatedInvitations = await axios.get(`${API_CONFIG.baseUrl}/api/team/invitations/${user.id}`);
                 if (updatedInvitations.data.success) {
                     setTeamInvitations(updatedInvitations.data.data);
@@ -192,7 +146,6 @@ export default function TeamsPage() {
                 data: { user_id: user.id }
             });
             if (response.data.success) {
-                // Odśwież listę zaproszeń
                 const updatedInvitations = await axios.get(`${API_CONFIG.baseUrl}/api/team/invitations/${user.id}`);
                 if (updatedInvitations.data.success) {
                     setTeamInvitations(updatedInvitations.data.data);

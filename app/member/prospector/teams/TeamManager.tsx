@@ -26,9 +26,8 @@ const TeamManager: React.FC<TeamManagerProps > = ({
         <section className="w-full">
             <div className="m-auto max-w-6xl pt-10">
                 <header className="w-full">
-                    <h1 className="text-3xl font-bold leading-[100px] global--text-dark">Zespoły</h1>
-
-                    <p className="text-lg font-regular global--text-silver">
+                    <h1 className="text-3xl font-bold leading-[100px] text-app-dark">Zespoły</h1>
+                    <p className="text-lg font-regular text-app-silver">
                         Miejsce w którym możesz tworzyć i dołączać do zespołów.
                     </p>
                 </header>
@@ -53,9 +52,7 @@ const TeamManager: React.FC<TeamManagerProps > = ({
                     </div>
 
                     <div>
-                        <Button type="button" uiType="primary" size="regularSize" onClick={() => setTeamModalOpen(true)}>
-                            Stwórz zespół
-                        </Button>
+                        <Button type="button" uiType="primary" size="regularSize" onClick={() => setTeamModalOpen(true)}>Stwórz zespół</Button>
                     </div>
                 </div>
 

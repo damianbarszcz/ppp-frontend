@@ -28,6 +28,20 @@ function TeamNav({
     const isDark = isDarkColor(user.profile.user_avatar_color);
     const textColorClass = isDark ? 'text-white' : 'text-black';
 
+    const handleNotificationClick = () => {
+        setNotifyDropdownOpen(!notifyDropdownOpen);
+        if (accountDropdownOpen) {
+            setAccountDropdownOpen(false);
+        }
+    };
+
+    const handleAccountClick = () => {
+        setAccountDropdownOpen(!accountDropdownOpen);
+        if (notifyDropdownOpen) {
+            setNotifyDropdownOpen(false);
+        }
+    };
+
     return (
         <nav className="w-full pb-3 pt-3 bg-app-dark-blue">
             <div className="flex justify-between items-center pr-10 pl-10">
@@ -44,10 +58,7 @@ function TeamNav({
                 <div className="flex justify-end items-center col-span-2">
                     {user?.account_type === "P" && (
                         <>
-                            <a href="/member/prospector/search-creator" className="hidden block p-2 mr-6 global--border-blue rounded-sm
-                            text-sm font-body font-semibold global--text-link" target="_self">Kreator Poszukiwań</a>
-
-                            <button type="button" onClick={() => setNotifyDropdownOpen(!notifyDropdownOpen)} className="relative h-10 w-10 mr-3.5 rounded-full border border-app-white">
+                            <button type="button" onClick={handleNotificationClick}  className="relative h-10 w-10 mr-3.5 rounded-full border border-app-white">
                                 <span className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-body font-semibold text-base`}>
                                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff">
                                         <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0
@@ -58,7 +69,7 @@ function TeamNav({
                         </>
                     )}
 
-                    <button type="button" onClick={() => setAccountDropdownOpen(!accountDropdownOpen)} className="relative h-10 w-10 rounded-full" style={{ backgroundColor: user.profile.user_avatar_color }}>
+                    <button type="button" onClick={handleAccountClick}  className="relative h-10 w-10 rounded-full" style={{ backgroundColor: user.profile.user_avatar_color }}>
                         <span className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-body font-semibold text-base ${textColorClass}`}>
                             {initials}
                         </span>

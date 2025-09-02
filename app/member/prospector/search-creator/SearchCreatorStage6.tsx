@@ -128,6 +128,7 @@ const SearchCreatorStage6: React.FC<SearchCreatorStage6Props> = ({
 
     const [newRequirement, setNewRequirement] = useState('');
     const [newDealBreaker, setNewDealBreaker] = useState('');
+    const [isSearching, setIsSearching] = useState(false);
 
     const togglePriority = (priorityId: string) => {
         const newPriorities = selectedPriorities.includes(priorityId)
@@ -189,11 +190,7 @@ const SearchCreatorStage6: React.FC<SearchCreatorStage6Props> = ({
         }
     };
 
-    const canProceed = selectedPriorities.length > 0;
-
-    const [isSearching, setIsSearching] = useState(false);
-
-    const handleSearch = async () => {
+    const handleSubmitToMicroservice = async () => {
         if (!canProceed) return;
 
         setIsSearching(true);
@@ -202,62 +199,80 @@ const SearchCreatorStage6: React.FC<SearchCreatorStage6Props> = ({
             // Przygotuj dane do wysłania
             const searchCriteria = {
                 timestamp: new Date().toISOString(),
-                collaborationAreas: formData.collaborationAreas,
-                meetingFrequency: formData.meetingFrequency,
-                sessionLength: formData.sessionLength,
-                timePreferences: formData.timePreferences,
-                workStyles: formData.workStyles,
-                experienceLevel: formData.experienceLevel,
+                collaboration_areas: formData.collaborationAreas,  // snake_case
+                meeting_frequency: formData.meetingFrequency,      // snake_case
+                session_length: formData.sessionLength,            // snake_case
+                time_preferences: formData.timePreferences,        // snake_case
+                work_styles: formData.workStyles,                  // snake_case
+                experience_level: formData.experienceLevel,        // snake_case
                 industries: formData.industries,
-                requiredSkills: formData.requiredSkills,
+                required_skills: formData.requiredSkills,          // snake_case
                 languages: formData.languages,
-                projectType: formData.projectType,
-                timeCommitment: formData.timeCommitment,
-                workModes: formData.workModes,
-                budgetRange: formData.budgetRange,
+                project_type: formData.projectType,                // snake_case
+                time_commitment: formData.timeCommitment,          // snake_case
+                work_modes: formData.workModes,                    // snake_case
+                budget_range: formData.budgetRange,                // snake_case
                 location: formData.location,
                 priorities: selectedPriorities,
-                personalityTraits: selectedPersonalityTraits,
-                specificRequirements: specificRequirements,
-                dealBreakers: dealBreakers,
-                additionalNotes: additionalNotes
+                personality_traits: selectedPersonalityTraits,     // snake_case
+                specific_requirements: specificRequirements,       // snake_case
+                deal_breakers: dealBreakers,                       // snake_case
+                additional_notes: additionalNotes                  // snake_case
             };
 
-            // Bezpośrednie wywołanie do Python AI Microservice
-            const response = await fetch(`${process.env.NEXT_PUBLIC_AI_SERVICE_URL}/api/partner-matching`, {
+            console.log('Wysyłanie danych do AI:', searchCriteria);
+
+            // Wywołanie do Python AI Microservice
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ALGORITHM_SERVICE_URL}/api/partner-matching`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify(searchCriteria)
             });
 
-            if (response.ok) {
-                const result = await response.json();
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
 
-                if (result.success) {
-                    // AI zwraca search_id do trackowania
-                    sessionStorage.setItem('searchId', result.search_id);
-                    sessionStorage.setItem('searchCriteria', JSON.stringify(searchCriteria));
+            const result = await response.json();
 
-                    // Przekieruj na stronę wyników
-                    window.location.href = `/member/prospector/search-results?searchId=${result.search_id}`;
-                } else {
-                    throw new Error(result.message || 'Błąd wyszukiwania');
-                }
+            if (result.success) {
+                sessionStorage.setItem('searchId', result.search_id);
+                sessionStorage.setItem('searchCriteria', JSON.stringify(searchCriteria));
+
+                console.log('Otrzymane wyniki:', result);
+                nextStage();
             } else {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Błąd połączenia z AI');
+                throw new Error(result.message || 'Błąd wyszukiwania');
             }
 
         } catch (error) {
-            console.error('AI Search Error:', error);
-            alert('Wystąpił błąd podczas wyszukiwania. Spróbuj ponownie.');
+            console.error('Błąd podczas wysyłania do AI:', error);
+
+            let errorMessage = 'Wystąpił błąd podczas wyszukiwania. ';
+
+            if (error instanceof Error) {
+                if (error.message.includes('Failed to fetch')) {
+                    errorMessage += 'Nie można połączyć się z serwisem AI. Sprawdź połączenie internetowe.';
+                } else if (error.message.includes('404')) {
+                    errorMessage += 'Serwis AI jest niedostępny (404).';
+                } else if (error.message.includes('500')) {
+                    errorMessage += 'Błąd wewnętrzny serwisu AI.';
+                } else {
+                    errorMessage += error.message;
+                }
+            }
+
+            alert(errorMessage + ' Spróbuj ponownie.');
         } finally {
             setIsSearching(false);
         }
     };
 
+    const canProceed = selectedPriorities.length > 0;
 
     return (
         <div className="max-w-5xl min-h-[90vh] max-h-[90vh] m-auto flex flex-col py-10 overflow-y-auto hide-scrollbar">
@@ -466,8 +481,14 @@ const SearchCreatorStage6: React.FC<SearchCreatorStage6Props> = ({
                 </div>
 
                 <div className="flex justify-end items-center mt-6">
-                    <Button type="button" uiType="primary" size="regularSize" onClick={nextStage} disabled={!canProceed}>
-                        Generuj wyniki
+                    <Button
+                        type="button"
+                        uiType="primary"
+                        size="regularSize"
+                        onClick={handleSubmitToMicroservice}
+                        disabled={!canProceed || isSearching}
+                    >
+                        {isSearching ? 'Generuję wyniki...' : 'Generuj wyniki'}
                     </Button>
                 </div>
             </div>

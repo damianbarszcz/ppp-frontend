@@ -9,8 +9,8 @@ import SearchCreatorStage2 from "./SearchCreatorStage2";
 import SearchCreatorStage3 from "./SearchCreatorStage3";
 import SearchCreatorStage4 from "./SearchCreatorStage4";
 import SearchCreatorStage5 from "./SearchCreatorStage5";
-import SearchCreatorStage6 from "./SearchCreatorStage6"; // Dodaj import dla Stage 6
-import RecommendedPeopleList from "./SearchCreatorFinal"; // Import dla wyniku wyszukiwania
+import SearchCreatorStage6 from "./SearchCreatorStage6";
+import RecommendedPeopleList from "./RecommendedPeopleList";
 
 interface SearchFormData {
     // Stage 2 - obszary współpracy
@@ -35,15 +35,15 @@ interface SearchFormData {
     budgetRange: string;
     location: string;
 
-    // Stage 6 - dopasowanie i oczekiwania (ZAKTUALIZOWANE)
-    priorities: string[];              // Nowe pole
-    personalityTraits: string[];       // Nowe pole
-    specificRequirements: string[];    // Nowe pole
-    dealBreakers: string[];           // Nowe pole
-    additionalNotes: string;          // Zostaje bez zmian
+    // Stage 6 - dopasowanie i oczekiwania
+    priorities: string[];
+    personalityTraits: string[];
+    specificRequirements: string[];
+    dealBreakers: string[];
+    additionalNotes: string;
 
     // Stare pola do usunięcia po migracji
-    lookingFor: string[];             // Zastąpione przez priorities i specificRequirements
+    lookingFor: string[];
 }
 
 export default function SearchCreatorPage() {
@@ -75,7 +75,7 @@ export default function SearchCreatorPage() {
         budgetRange: '',
         location: '',
 
-        // Stage 6 - ZAKTUALIZOWANE
+        // Stage 6
         priorities: [],
         personalityTraits: [],
         specificRequirements: [],
@@ -141,10 +141,7 @@ export default function SearchCreatorPage() {
                 );
             case 7:
                 return (
-                    <RecommendedPeopleList
-                        nextStage={nextStage}
-                        // people={searchResults} // W przyszłości przekażesz tutaj wyniki wyszukiwania
-                    />
+                    <RecommendedPeopleList />
                 );
             default:
                 return <SearchCreatorStage1 nextStage={nextStage} />;
@@ -164,11 +161,13 @@ export default function SearchCreatorPage() {
                 type="standard"
             />
             <main className="flex h-[100vh]">
-                <section className="w-2/5 h-full">
-                    <SearchCreatorSteps stage={stage} />
-                </section>
+                {stage !== 7 && (
+                    <section className="w-2/5 h-full">
+                        <SearchCreatorSteps stage={stage} />
+                    </section>
+                )}
 
-                <section className="w-3/5 h-full overflow-y-auto">
+                <section className={`${stage === 7 ? 'w-full' : 'w-3/5'} h-full overflow-y-auto`}>
                     {renderCurrentStage()}
                 </section>
             </main>

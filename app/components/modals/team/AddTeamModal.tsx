@@ -111,7 +111,6 @@ const AddTeamModal: React.FC<{
                                     />
                                 </div>
 
-                                {/* Wyświetl błędy ogólne */}
                                 {getFieldError('general') && (
                                     <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
                                         {getFieldError('general')}
@@ -192,9 +191,7 @@ const AddTeamModal: React.FC<{
                             </div>
 
                             <div className="text-right">
-                                <Button type="submit" uiType="primary" size="regularSize">
-                                    Stwórz zespół
-                                </Button>
+                                <Button type="submit" uiType="primary" size="regularSize">Stwórz zespół</Button>
                             </div>
                         </div>
                     </div>
