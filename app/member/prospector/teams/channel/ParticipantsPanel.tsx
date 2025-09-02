@@ -28,26 +28,8 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
     const localVideoRef = useRef<HTMLVideoElement>(null);
     const remoteVideoRefs = useRef<Map<number, HTMLVideoElement>>(new Map());
 
-    // Debugowanie - sprawdź co otrzymuje komponent
     useEffect(() => {
-        console.log('ParticipantsPanel - localStream:', localStream);
-        console.log('ParticipantsPanel - isVideoOn:', isVideoOn);
-        console.log('ParticipantsPanel - streams size:', streams.size);
-        console.log('ParticipantsPanel - activeParticipants count:', activeParticipants.length);
-
-        if (localStream) {
-            console.log('ParticipantsPanel - localStream tracks:', localStream.getTracks());
-            console.log('ParticipantsPanel - video tracks:', localStream.getVideoTracks());
-            console.log('ParticipantsPanel - audio tracks:', localStream.getAudioTracks());
-        }
-    }, [localStream, isVideoOn, streams, activeParticipants]);
-
-    // Effect do obsługi lokalnego video
-    useEffect(() => {
-        console.log('Local video effect triggered');
-
         if (localVideoRef.current && localStream) {
-            console.log('Setting localStream to video element');
             localVideoRef.current.srcObject = localStream;
 
             localVideoRef.current.onloadedmetadata = () => {
@@ -78,7 +60,6 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
         }
     }, [localStream]);
 
-    // Effect do obsługi zdalnych video
     useEffect(() => {
         console.log('Remote streams effect triggered, streams count:', streams.size);
 
@@ -104,7 +85,6 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
             }
         });
 
-        // Wyczyść referencje do usuniętych użytkowników
         const currentUserIds = new Set(Array.from(streams.keys()));
         Array.from(remoteVideoRefs.current.keys()).forEach(userId => {
             if (!currentUserIds.has(userId)) {
@@ -211,7 +191,6 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
                     </div>
                 )}
 
-                {/* Nazwa uczestnika z speaking indicator */}
                 <div className={`absolute bottom-2 left-2 px-2 py-1 rounded-md transition-all duration-200 backdrop-blur-sm ${
                     isUserSpeaking
                         ? 'bg-green-600 bg-opacity-90 shadow-lg'
@@ -230,7 +209,6 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
                     </span>
                 </div>
 
-                {/* Status indicators */}
                 <div className="absolute top-2 right-2 flex gap-1">
                     <div className={`p-1.5 rounded-full transition-all duration-200 backdrop-blur-sm ${
                         hasVideo ? 'bg-green-500 shadow-lg shadow-green-500/50' : 'bg-gray-500'
@@ -263,8 +241,6 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
             </div>
         );
     };
-
-    // Funkcje pomocnicze do responsywnych rozmiarów
     const getGridLayout = () => {
         if (participantsCount === 1) return "grid-cols-1";
         if (participantsCount === 2) return "grid-cols-1 lg:grid-cols-2";
@@ -299,15 +275,12 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
                         renderParticipant(participant, index)
                     )}
                 </div>
-
-                {/* Informacja o liczbie uczestników */}
                 {participantsCount > 12 && (
                     <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded-lg">
                         <span className="text-sm">+{participantsCount - 12} więcej uczestników</span>
                     </div>
                 )}
 
-                {/* Debug info - usuń to w produkcji */}
                 <div className="absolute top-0 left-0 bg-black bg-opacity-70 text-white p-2 text-xs rounded-br-lg">
                     <div>Local stream: {localStream ? 'YES' : 'NO'}</div>
                     <div>Video on: {isVideoOn ? 'YES' : 'NO'}</div>
@@ -323,7 +296,6 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
                 </div>
             </div>
 
-            {/* Dodaj CSS animations */}
             <style jsx>{`
                 @keyframes pulse-border {
                     0%, 100% { 

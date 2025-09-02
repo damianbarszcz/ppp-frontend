@@ -1,33 +1,478 @@
-import React from "react";
+import React, { useState } from "react";
+import Button from "@/app/components/ui/Button";
 
-interface SearchCreatorStage1Props {
+interface SearchCreatorStage6Props {
     nextStage: () => void;
+    updateFormData: (data: any) => void;
+    formData: any;
 }
 
-const SearchCreatorStage6: React.FC<SearchCreatorStage1Props> = ({
-                                                                     nextStage }) => {
-    return (
-        <div className="h-full max-w-md m-auto flex flex-col justify-center">
-            <div className="flex flex-col justify-between pt-12 pb-12 pr-10 pl-10 min-h-[650px] min-w-[550px] global--border-d-white rounded-md">
-                <header>
-                    <h1 className="font-body text-3xl font-bold global--text-dark">Dopasowanie i oczekiwania</h1>
+interface Priority {
+    id: string;
+    title: string;
+    description: string;
+}
 
-                    <div className="mt-8 mr-24">
-                        <p className="font-body text-base font-regular global--text-silver leading-[30px]">
-                            Wybierz cel swoich poszukiwań
-                        </p>
-                    </div>
+interface PersonalityTrait {
+    id: string;
+    title: string;
+    description: string;
+}
+
+const PRIORITIES: Priority[] = [
+    {
+        id: 'technical-skills',
+        title: 'Umiejętności techniczne',
+        description: 'Wysokie kompetencje w wybranej dziedzinie'
+    },
+    {
+        id: 'experience',
+        title: 'Doświadczenie praktyczne',
+        description: 'Wcześniejsza praca w podobnych projektach'
+    },
+    {
+        id: 'communication',
+        title: 'Umiejętności komunikacyjne',
+        description: 'Płynna komunikacja i współpraca w zespole'
+    },
+    {
+        id: 'creativity',
+        title: 'Kreatywność',
+        description: 'Innowacyjne podejście do rozwiązywania problemów'
+    },
+    {
+        id: 'reliability',
+        title: 'Niezawodność',
+        description: 'Terminowość i odpowiedzialność za zadania'
+    },
+    {
+        id: 'leadership',
+        title: 'Umiejętności przywódcze',
+        description: 'Zdolność do kierowania i motywowania zespołu'
+    },
+    {
+        id: 'adaptability',
+        title: 'Elastyczność',
+        description: 'Szybka adaptacja do zmian i nowych wyzwań'
+    },
+    {
+        id: 'networking',
+        title: 'Sieć kontaktów',
+        description: 'Dostęp do branżowych kontaktów i partnerów'
+    }
+];
+
+const PERSONALITY_TRAITS: PersonalityTrait[] = [
+    {
+        id: 'proactive',
+        title: 'Proaktywny',
+        description: 'Samodzielnie podejmuje inicjatywy'
+    },
+    {
+        id: 'analytical',
+        title: 'Analityczny',
+        description: 'Systematyczne podejście do problemów'
+    },
+    {
+        id: 'collaborative',
+        title: 'Zespołowy',
+        description: 'Naturalnie współpracuje z innymi'
+    },
+    {
+        id: 'detail-oriented',
+        title: 'Skrupulatny',
+        description: 'Dbałość o szczegóły i jakość'
+    },
+    {
+        id: 'ambitious',
+        title: 'Ambitny',
+        description: 'Dąży do wysokich celów i rozwoju'
+    },
+    {
+        id: 'patient',
+        title: 'Cierpliwy',
+        description: 'Spokojne podejście do długoterminowych celów'
+    },
+    {
+        id: 'energetic',
+        title: 'Energiczny',
+        description: 'Wysokie tempo pracy i motywacja'
+    },
+    {
+        id: 'diplomatic',
+        title: 'Dyplomatyczny',
+        description: 'Umiejętność rozwiązywania konfliktów'
+    }
+];
+
+const SearchCreatorStage6: React.FC<SearchCreatorStage6Props> = ({
+                                                                     nextStage,
+                                                                     updateFormData,
+                                                                     formData
+                                                                 }) => {
+    const [selectedPriorities, setSelectedPriorities] = useState<string[]>(
+        formData.priorities || []
+    );
+    const [selectedPersonalityTraits, setSelectedPersonalityTraits] = useState<string[]>(
+        formData.personalityTraits || []
+    );
+    const [specificRequirements, setSpecificRequirements] = useState<string[]>(
+        formData.specificRequirements || []
+    );
+    const [dealBreakers, setDealBreakers] = useState<string[]>(
+        formData.dealBreakers || []
+    );
+    const [additionalNotes, setAdditionalNotes] = useState<string>(
+        formData.additionalNotes || ''
+    );
+
+    const [newRequirement, setNewRequirement] = useState('');
+    const [newDealBreaker, setNewDealBreaker] = useState('');
+
+    const togglePriority = (priorityId: string) => {
+        const newPriorities = selectedPriorities.includes(priorityId)
+            ? selectedPriorities.filter(p => p !== priorityId)
+            : [...selectedPriorities, priorityId];
+
+        setSelectedPriorities(newPriorities);
+        updateFormData({ priorities: newPriorities });
+    };
+
+    const togglePersonalityTrait = (traitId: string) => {
+        const newTraits = selectedPersonalityTraits.includes(traitId)
+            ? selectedPersonalityTraits.filter(t => t !== traitId)
+            : [...selectedPersonalityTraits, traitId];
+
+        setSelectedPersonalityTraits(newTraits);
+        updateFormData({ personalityTraits: newTraits });
+    };
+
+    const addSpecificRequirement = () => {
+        if (newRequirement.trim() && !specificRequirements.includes(newRequirement.trim())) {
+            const updatedRequirements = [...specificRequirements, newRequirement.trim()];
+            setSpecificRequirements(updatedRequirements);
+            updateFormData({ specificRequirements: updatedRequirements });
+            setNewRequirement('');
+        }
+    };
+
+    const removeSpecificRequirement = (index: number) => {
+        const updatedRequirements = specificRequirements.filter((_, i) => i !== index);
+        setSpecificRequirements(updatedRequirements);
+        updateFormData({ specificRequirements: updatedRequirements });
+    };
+
+    const addDealBreaker = () => {
+        if (newDealBreaker.trim() && !dealBreakers.includes(newDealBreaker.trim())) {
+            const updatedDealBreakers = [...dealBreakers, newDealBreaker.trim()];
+            setDealBreakers(updatedDealBreakers);
+            updateFormData({ dealBreakers: updatedDealBreakers });
+            setNewDealBreaker('');
+        }
+    };
+
+    const removeDealBreaker = (index: number) => {
+        const updatedDealBreakers = dealBreakers.filter((_, i) => i !== index);
+        setDealBreakers(updatedDealBreakers);
+        updateFormData({ dealBreakers: updatedDealBreakers });
+    };
+
+    const handleNotesChange = (value: string) => {
+        setAdditionalNotes(value);
+        updateFormData({ additionalNotes: value });
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, action: () => void) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            action();
+        }
+    };
+
+    const canProceed = selectedPriorities.length > 0;
+
+    const [isSearching, setIsSearching] = useState(false);
+
+    const handleSearch = async () => {
+        if (!canProceed) return;
+
+        setIsSearching(true);
+
+        try {
+            // Przygotuj dane do wysłania
+            const searchCriteria = {
+                timestamp: new Date().toISOString(),
+                collaborationAreas: formData.collaborationAreas,
+                meetingFrequency: formData.meetingFrequency,
+                sessionLength: formData.sessionLength,
+                timePreferences: formData.timePreferences,
+                workStyles: formData.workStyles,
+                experienceLevel: formData.experienceLevel,
+                industries: formData.industries,
+                requiredSkills: formData.requiredSkills,
+                languages: formData.languages,
+                projectType: formData.projectType,
+                timeCommitment: formData.timeCommitment,
+                workModes: formData.workModes,
+                budgetRange: formData.budgetRange,
+                location: formData.location,
+                priorities: selectedPriorities,
+                personalityTraits: selectedPersonalityTraits,
+                specificRequirements: specificRequirements,
+                dealBreakers: dealBreakers,
+                additionalNotes: additionalNotes
+            };
+
+            // Bezpośrednie wywołanie do Python AI Microservice
+            const response = await fetch(`${process.env.NEXT_PUBLIC_AI_SERVICE_URL}/api/partner-matching`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(searchCriteria)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+
+                if (result.success) {
+                    // AI zwraca search_id do trackowania
+                    sessionStorage.setItem('searchId', result.search_id);
+                    sessionStorage.setItem('searchCriteria', JSON.stringify(searchCriteria));
+
+                    // Przekieruj na stronę wyników
+                    window.location.href = `/member/prospector/search-results?searchId=${result.search_id}`;
+                } else {
+                    throw new Error(result.message || 'Błąd wyszukiwania');
+                }
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Błąd połączenia z AI');
+            }
+
+        } catch (error) {
+            console.error('AI Search Error:', error);
+            alert('Wystąpił błąd podczas wyszukiwania. Spróbuj ponownie.');
+        } finally {
+            setIsSearching(false);
+        }
+    };
+
+
+    return (
+        <div className="max-w-5xl min-h-[90vh] max-h-[90vh] m-auto flex flex-col py-10 overflow-y-auto hide-scrollbar">
+            <div className="flex flex-col justify-between flex-1 global--border-d-white rounded-md p-10">
+                <header>
+                    <h1 className="text-2xl font-bold text-app-dark mb-4">Dopasowanie i oczekiwania</h1>
+                    <p className="text-base font-regular text-app-silver leading-[30px]">
+                        Określ najważniejsze cechy i wymagania wobec idealnego współpracownika.
+                    </p>
                 </header>
 
-                <div>
-                    <form onSubmit={(e) => { e.preventDefault(); nextStage(); }}  className="relative">
-                        <button type="submit" className="block pt-3 pb-3 pl-8 pr-8 global--border-blue rounded-3xl
-                        text-sm font-body font-semibold global--text-link ml-auto">Dalej</button>
-                    </form>
+                <div className="flex-1">
+                    {/* Sekcja 1: Priorytety */}
+                    <div className="mt-10 mb-10">
+                        <header>
+                            <h2 className="text-lg font-semibold text-app-dark mb-4">Najważniejsze priorytety</h2>
+                            <p className="text-sm text-app-silver mb-4">
+                                Wybierz maksymalnie 4 najważniejsze cechy współpracownika:
+                            </p>
+                        </header>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {PRIORITIES.map(priority => (
+                                <div
+                                    key={priority.id}
+                                    onClick={() => togglePriority(priority.id)}
+                                    className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                                        selectedPriorities.includes(priority.id)
+                                            ? 'global--border-blue global--bg-light-blue'
+                                            : selectedPriorities.length >= 4
+                                                ? 'global--border-d-white opacity-50 cursor-not-allowed'
+                                                : 'global--border-d-white hover:global--border-silver'
+                                    }`}
+                                    style={{
+                                        pointerEvents:
+                                            selectedPriorities.includes(priority.id) || selectedPriorities.length < 4
+                                                ? 'auto'
+                                                : 'none'
+                                    }}
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <header>
+                                            <h3 className="font-semibold text-app-dark">{priority.title}</h3>
+                                            <p className="text-sm text-app-silver">{priority.description}</p>
+                                        </header>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedPriorities.includes(priority.id)}
+                                            onChange={() => {}}
+                                            className="text-blue-500"
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {selectedPriorities.length > 0 && (
+                            <div className="mt-4 text-sm text-app-silver">
+                                Wybrano: {selectedPriorities.length}/4 priorytetów
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Sekcja 2: Cechy osobowości */}
+                    <div className="mt-10 mb-10">
+                        <header>
+                            <h2 className="text-lg font-semibold text-app-dark mb-4">Preferowane cechy osobowości</h2>
+                            <p className="text-sm text-app-silver mb-4">
+                                Jakie cechy charakteru są dla Ciebie ważne:
+                            </p>
+                        </header>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {PERSONALITY_TRAITS.map(trait => (
+                                <div
+                                    key={trait.id}
+                                    onClick={() => togglePersonalityTrait(trait.id)}
+                                    className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                                        selectedPersonalityTraits.includes(trait.id)
+                                            ? 'global--border-blue global--bg-light-blue'
+                                            : 'global--border-d-white hover:global--border-silver'
+                                    }`}
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <header>
+                                            <h3 className="font-semibold text-app-dark">{trait.title}</h3>
+                                            <p className="text-sm text-app-silver">{trait.description}</p>
+                                        </header>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedPersonalityTraits.includes(trait.id)}
+                                            onChange={() => {}}
+                                            className="text-blue-500"
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Sekcja 3: Specyficzne wymagania */}
+                    <div className="mt-10 mb-10">
+                        <header>
+                            <h2 className="text-lg font-semibold text-app-dark mb-4">Specyficzne wymagania</h2>
+                            <p className="text-sm text-app-silver mb-4">
+                                Dodaj konkretne wymagania dotyczące współpracownika:
+                            </p>
+                        </header>
+
+                        <div className="flex gap-2 mb-4">
+                            <input
+                                type="text"
+                                value={newRequirement}
+                                onChange={(e) => setNewRequirement(e.target.value)}
+                                onKeyPress={(e) => handleKeyPress(e, addSpecificRequirement)}
+                                className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                                placeholder="np. Minimum 3 lata doświadczenia w React, Certyfikat Google Ads..."
+                            />
+                            <button
+                                onClick={addSpecificRequirement}
+                                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                            >
+                                Dodaj
+                            </button>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                            {specificRequirements.map((requirement, index) => (
+                                <span
+                                    key={index}
+                                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm flex items-center gap-2"
+                                >
+                                    {requirement}
+                                    <button
+                                        onClick={() => removeSpecificRequirement(index)}
+                                        className="text-blue-500 hover:text-blue-700 ml-1"
+                                    >
+                                        ×
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Sekcja 4: Deal breakers */}
+                    <div className="mt-10 mb-10">
+                        <header>
+                            <h2 className="text-lg font-semibold text-app-dark mb-4">Wykluczające czynniki</h2>
+                            <p className="text-sm text-app-silver mb-4">
+                                Co absolutnie wykluczyłoby współpracę:
+                            </p>
+                        </header>
+
+                        <div className="flex gap-2 mb-4">
+                            <input
+                                type="text"
+                                value={newDealBreaker}
+                                onChange={(e) => setNewDealBreaker(e.target.value)}
+                                onKeyPress={(e) => handleKeyPress(e, addDealBreaker)}
+                                className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                                placeholder="np. Brak dostępności w weekendy, Brak znajomości języka angielskiego..."
+                            />
+                            <button
+                                onClick={addDealBreaker}
+                                className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                            >
+                                Dodaj
+                            </button>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                            {dealBreakers.map((dealBreaker, index) => (
+                                <span
+                                    key={index}
+                                    className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm flex items-center gap-2"
+                                >
+                                    {dealBreaker}
+                                    <button
+                                        onClick={() => removeDealBreaker(index)}
+                                        className="text-red-500 hover:text-red-700 ml-1"
+                                    >
+                                        ×
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Sekcja 5: Dodatkowe uwagi */}
+                    <div className="mt-10 mb-10">
+                        <header>
+                            <h2 className="text-lg font-semibold text-app-dark mb-4">Dodatkowe uwagi</h2>
+                            <p className="text-sm text-app-silver mb-4">
+                                Opisz szczegółowo czego szukasz lub dodaj inne ważne informacje:
+                            </p>
+                        </header>
+
+                        <textarea
+                            value={additionalNotes}
+                            onChange={(e) => handleNotesChange(e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 resize-none"
+                            rows={6}
+                            placeholder="Opisz dokładniej swoje oczekiwania, specyficzne wymagania projektowe, kulturę pracy, którą chcesz budować w zespole..."
+                        />
+                    </div>
+                </div>
+
+                <div className="flex justify-end items-center mt-6">
+                    <Button type="button" uiType="primary" size="regularSize" onClick={nextStage} disabled={!canProceed}>
+                        Generuj wyniki
+                    </Button>
                 </div>
             </div>
         </div>
     );
-}
+};
 
-export default  SearchCreatorStage6;
+export default SearchCreatorStage6;

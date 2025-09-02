@@ -45,27 +45,22 @@ export default function SingleChannelPage() {
         ]
     };
 
-    // Update existing peer connections with new stream
     const updatePeerConnectionsWithStream = useCallback((stream: MediaStream | null) => {
         console.log('Updating peer connections with new stream');
 
         peerConnectionsRef.current.forEach((pc, userId) => {
             if (stream) {
-                // Najpierw usuń stare tracki
                 const senders = pc.getSenders();
                 senders.forEach(sender => {
                     if (sender.track) {
                         pc.removeTrack(sender);
                     }
                 });
-
-                // Dodaj nowe tracki
                 stream.getTracks().forEach(track => {
                     console.log(`Adding ${track.kind} track to peer ${userId}`);
                     pc.addTrack(track, stream);
                 });
             } else {
-                // Usuń wszystkie tracki jeśli nie ma strumienia
                 const senders = pc.getSenders();
                 senders.forEach(sender => {
                     if (sender.track) {
@@ -75,7 +70,6 @@ export default function SingleChannelPage() {
             }
         });
 
-        // Renegocjuj połączenia
         peerConnectionsRef.current.forEach(async (pc, userId) => {
             if (pc.connectionState === 'connected') {
                 try {
@@ -95,11 +89,7 @@ export default function SingleChannelPage() {
         });
     }, []);
 
-    // Create peer connection for new user
     const createPeerConnection = useCallback((userId: number) => {
-        console.log('Creating peer connection for user:', userId);
-
-        // Sprawdź czy połączenie już istnieje
         const existingConnection = peerConnectionsRef.current.get(userId);
         if (existingConnection &&
             (existingConnection.connectionState === 'connected' ||
@@ -107,16 +97,12 @@ export default function SingleChannelPage() {
             console.log('Reusing existing connection for user:', userId);
             return existingConnection;
         }
-
-        // Zamknij stare połączenie jeśli istnieje
         if (existingConnection) {
             console.log('Closing old connection for user:', userId);
             existingConnection.close();
         }
 
         const peerConnection = new RTCPeerConnection(rtcConfig);
-
-        // Dodaj lokalne tracki jeśli istnieją
         if (localStream) {
             console.log('Adding local stream tracks to new peer connection');
             localStream.getTracks().forEach(track => {
@@ -124,8 +110,6 @@ export default function SingleChannelPage() {
                 peerConnection.addTrack(track, localStream);
             });
         }
-
-        // Obsługa zdalnego strumienia
         peerConnection.ontrack = (event) => {
             console.log('Received remote stream from user:', userId, event.streams);
             const [remoteStream] = event.streams;
@@ -140,8 +124,6 @@ export default function SingleChannelPage() {
                 });
             }
         };
-
-        // Obsługa ICE candidates
         peerConnection.onicecandidate = (event) => {
             if (event.candidate && socketRef.current) {
                 console.log('Sending ICE candidate to user:', userId);
@@ -151,8 +133,6 @@ export default function SingleChannelPage() {
                 });
             }
         };
-
-        // Monitorowanie stanu połączenia
         peerConnection.onconnectionstatechange = () => {
             const state = peerConnection.connectionState;
             console.log(`Peer connection state for user ${userId}:`, state);
@@ -181,8 +161,6 @@ export default function SingleChannelPage() {
         peerConnectionsRef.current.set(userId, peerConnection);
         return peerConnection;
     }, [localStream, activeParticipants]);
-
-    // Inicjuj połączenie z użytkownikiem
     const initiateConnectionWithUser = useCallback(async (userId: number) => {
         if (!socketRef.current) return;
 
@@ -206,8 +184,6 @@ export default function SingleChannelPage() {
             console.error(`Error creating offer for user ${userId}:`, error);
         }
     }, [createPeerConnection]);
-
-    // Handle incoming offer
     const handleOffer = useCallback(async (data: {fromUserId: number, offer: RTCSessionDescriptionInit}) => {
         console.log('Handling offer from user:', data.fromUserId);
 
@@ -220,7 +196,6 @@ export default function SingleChannelPage() {
 
         try {
             await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
-
             const answer = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(answer);
 
@@ -236,9 +211,7 @@ export default function SingleChannelPage() {
         }
     }, [createPeerConnection]);
 
-    // Handle incoming answer
     const handleAnswer = useCallback(async (data: {fromUserId: number, answer: RTCSessionDescriptionInit}) => {
-        console.log('Handling answer from user:', data.fromUserId);
         const peerConnection = peerConnectionsRef.current.get(data.fromUserId);
         if (peerConnection) {
             try {
@@ -249,7 +222,6 @@ export default function SingleChannelPage() {
         }
     }, []);
 
-    // Handle incoming ICE candidate
     const handleIceCandidate = useCallback(async (data: {fromUserId: number, candidate: RTCIceCandidateInit}) => {
         const peerConnection = peerConnectionsRef.current.get(data.fromUserId);
         if (peerConnection) {
@@ -261,17 +233,12 @@ export default function SingleChannelPage() {
         }
     }, []);
 
-    // Socket initialization - tylko raz
     useEffect(() => {
         if (!user?.id || !singleTeam?.id) return;
-
-        // Jeśli socket już istnieje i jest połączony, nie twórz nowego
         if (socketRef.current?.connected) {
             console.log('Socket already connected');
             return;
         }
-
-        console.log('Creating new socket connection');
         const socket = io(`${API_CONFIG.baseUrl.replace('/api', '')}/channel`, {
             transports: ['websocket', 'polling'],
             reconnection: true,
@@ -290,8 +257,6 @@ export default function SingleChannelPage() {
         });
 
         socket.on('user-joined', (data) => {
-            console.log('User joined:', data.userId);
-            // Jeśli mamy lokalny strumień, utwórz połączenie
             if (localStream && data.userId !== user.id) {
                 setTimeout(() => {
                     initiateConnectionWithUser(data.userId);
@@ -300,7 +265,6 @@ export default function SingleChannelPage() {
         });
 
         socket.on('user-left', (data) => {
-            console.log('User left:', data.userId);
             const peerConnection = peerConnectionsRef.current.get(data.userId);
             if (peerConnection) {
                 peerConnection.close();
@@ -342,23 +306,15 @@ export default function SingleChannelPage() {
             peerConnectionsRef.current.forEach(pc => pc.close());
             peerConnectionsRef.current.clear();
         };
-    }, [user?.id, singleTeam?.id]); // Usuń zależności od callbacków
+    }, [user?.id, singleTeam?.id]);
 
-    // Osobny effect do obsługi zmian w lokalnym strumieniu
     useEffect(() => {
         if (localStream && socketRef.current?.connected) {
-            console.log('Local stream changed, updating connections');
-
-            // Aktualizuj istniejące połączenia
             updatePeerConnectionsWithStream(localStream);
-
-            // Powiadom innych o stanie strumienia
             socketRef.current.emit('user-stream-state-changed', {
                 hasVideo: isVideoOn,
                 hasAudio: !isMuted
             });
-
-            // Inicjuj połączenia z uczestnikami którzy jeszcze nie mają połączenia
             const otherParticipants = activeParticipants.filter(p => p.id !== user?.id);
             otherParticipants.forEach(participant => {
                 if (!peerConnectionsRef.current.has(participant.id)) {
@@ -484,11 +440,9 @@ export default function SingleChannelPage() {
         if (streamRef.current) {
             streamRef.current.getTracks().forEach(track => track.stop());
         }
-
         if (localStream) {
             localStream.getTracks().forEach(track => track.stop());
         }
-
         if (socketRef.current) {
             socketRef.current.emit('leave-channel');
             socketRef.current.disconnect();
@@ -496,7 +450,6 @@ export default function SingleChannelPage() {
 
         peerConnectionsRef.current.forEach(pc => pc.close());
         peerConnectionsRef.current.clear();
-
         router.push('/member/prospector/teams');
     };
 
@@ -520,7 +473,6 @@ export default function SingleChannelPage() {
             console.error(error);
         }
     }
-
     const handleToggleMute = async (): Promise<void> => {
         const newMutedState = !isMuted;
 
@@ -536,10 +488,8 @@ export default function SingleChannelPage() {
                 }
             }
         }
-
         setIsMuted(newMutedState);
 
-        // Powiadom innych o zmianie stanu
         if (socketRef.current) {
             socketRef.current.emit('user-stream-state-changed', {
                 hasVideo: isVideoOn,
@@ -547,32 +497,23 @@ export default function SingleChannelPage() {
             });
         }
     };
-
     const handleToggleVideo = async (): Promise<void> => {
         console.log('Toggling video, current state:', isVideoOn);
 
         if (isVideoOn) {
-            // Wyłączanie kamery
-            console.log('Turning off camera');
-
             if (localStream) {
-                // Zatrzymaj tylko video tracki
                 localStream.getVideoTracks().forEach(track => {
                     track.stop();
                     localStream.removeTrack(track);
                 });
-
-                // Jeśli nie ma już żadnych tracków, usuń strumień
                 if (localStream.getTracks().length === 0) {
                     setLocalStream(null);
                     streamRef.current = null;
                     cleanupSpeakingDetection();
                 }
             }
-
             setIsVideoOn(false);
 
-            // Powiadom innych
             if (socketRef.current) {
                 socketRef.current.emit('user-stream-state-changed', {
                     hasVideo: false,
@@ -581,8 +522,6 @@ export default function SingleChannelPage() {
             }
 
         } else {
-            // Włączanie kamery
-            console.log('Turning on camera');
             try {
                 const constraints = {
                     video: {
@@ -592,12 +531,9 @@ export default function SingleChannelPage() {
                     },
                     audio: true
                 };
-
                 const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                console.log('New camera stream obtained:', stream.getTracks());
-
-                // Ustaw strumień audio na odpowiedni stan
                 const audioTrack = stream.getAudioTracks()[0];
+
                 if (audioTrack) {
                     audioTrack.enabled = !isMuted;
                 }
@@ -605,15 +541,10 @@ export default function SingleChannelPage() {
                 setLocalStream(stream);
                 setIsVideoOn(true);
                 streamRef.current = stream;
-
-                // Setup speaking detection
                 if (!isMuted) {
                     setupSpeakingDetection(stream);
                 }
-
-                console.log('Camera turned on successfully');
             } catch (error) {
-                console.error('Błąd dostępu do kamery:', error);
                 alert('Nie można uzyskać dostępu do kamery. Sprawdź uprawnienia.');
             }
         }
@@ -646,7 +577,6 @@ export default function SingleChannelPage() {
 
         return () => {
             window.removeEventListener('beforeunload', handleBeforeUnload);
-            console.log('Component unmounting - cleaning up');
             cleanupSpeakingDetection();
 
             if (localStream) {

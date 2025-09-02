@@ -39,6 +39,15 @@ body {
   outline: none;
 }
 
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
 .global--bg-white{
   background-color: var(--white);
 }

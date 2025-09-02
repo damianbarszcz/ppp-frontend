@@ -7,7 +7,8 @@ import { useAuth } from "@/app/context/AuthContext";
 import ProtectedRoute from '@/app/routes/protected/ProtectedRoute';
 import Navigation from "@/app/components/navigation/Navigation";
 import ArticleCreatorForm from "@/app/member/mentor/article-creator/ArticleCreatorForm";
-import {ArticleValidationFrontendError, ArticleValidationError}  from '@/app/types/article.types';
+import {ArticleValidationError}  from '@/app/types/article.types';
+import {ArticleValidationFrontendError} from "@/app/types";
 
 export default function ArticleCreatorPage() {
     const router = useRouter();
@@ -87,7 +88,7 @@ export default function ArticleCreatorPage() {
                 setContentType('free');
 
                 sessionStorage.setItem('articleSuccessMessage', response.data.message);
-                router.push(`/member/home`);
+                router.push(`/member/mentor/home`);
             }
         } catch (error: any) {
             if (error.response?.status === 422 && error.response?.data?.errors) {

@@ -5,5 +5,6 @@ export * from './team.types';
 export * from './auth.types';
 export * from './channel.types';
 export * from './contact.types';
-export * from './validation.types';
 export * from './notification.types';
+export * from './profile.types';
+export * from './validation.types';

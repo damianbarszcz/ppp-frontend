@@ -1,5 +1,5 @@
 import React from "react";
-import {ValidationError} from "@/app/types/validation.types";
+import {ArticleValidationFrontendError} from "@/app/types/validation.types";
 
 export interface Article {
     title: string;
@@ -22,13 +22,6 @@ export interface ArticleFormProps {
     setContentType: (value: 'free' | 'paid') => void;
     createArticle: (e: React.FormEvent) => void;
     validationErrors: ArticleValidationFrontendError;
-}
-
-export interface ArticleValidationFrontendError {
-    titleError: string;
-    summaryError: string;
-    thumbnailUrlError: string;
-    contentError: string;
 }
 
 export interface ArticleValidationError {

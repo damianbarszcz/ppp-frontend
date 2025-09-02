@@ -11,6 +11,13 @@ export const API_CONFIG = {
             fetchMentor: '/api/users/username/'
         },
 
+        //Profile routes
+        profile:{
+            getProspectorProfile: '/api/prospector-profile/get/user/',
+            updateProspectorProfile: '/api/prospector-profile/update/user/',
+            publishProspectorProfile: '/api/prospector-profile/create',
+        },
+
         //Settings routes
         settings:{
             changeName: '/api/settings/personal-data/name',
