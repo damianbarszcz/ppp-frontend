@@ -16,7 +16,7 @@ const FollowersList: React.FC<FollowersListProps> = ({followers}: FollowersListP
                     const profile = user.profile;
                     const initials = getInitials(profile.name, profile.surname);
                     const isDark = isDarkColor(profile.user_avatar_color);
-                    const textColorClass = isDark ? 'text-white' : 'text-black';
+                    const textColorClass = isDark ? 'text-app-white' : 'text-app-black';
 
                     return (
                         <div key={followerData.id}
@@ -25,16 +25,16 @@ const FollowersList: React.FC<FollowersListProps> = ({followers}: FollowersListP
                              }`}>
                             <figure className="relative ml-10 rounded-[8px] h-16 w-16"
                                     style={{ backgroundColor: profile.user_avatar_color}}>
-                                <span className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-body font-semibold text-2xl ${textColorClass}`}>
+                                <span className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-semibold text-2xl ${textColorClass}`}>
                                     {initials}
                                 </span>
                             </figure>
 
                             <div className="ml-7">
-                                <div className="font-body text-base global--text-dark font-semibold">
+                                <div className="text-base global--text-dark font-semibold">
                                     {profile.name} {profile.surname}
                                 </div>
-                                <div className="font-body text-base global--text-silver mt-1">
+                                <div className="text-base global--text-silver mt-1">
                                     {profile.username}
                                 </div>
                             </div>
@@ -43,7 +43,7 @@ const FollowersList: React.FC<FollowersListProps> = ({followers}: FollowersListP
                 })
             ) : (
                 <div className="mt-10 mb-10 w-full p-10">
-                    <p className="font-body text-center text-base global--text-dark font-semibold">Brak obserwujących</p>
+                    <p className="text-center text-base global--text-dark font-semibold">Brak obserwujących</p>
                 </div>
             )}
         </div>

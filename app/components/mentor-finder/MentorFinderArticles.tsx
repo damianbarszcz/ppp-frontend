@@ -16,10 +16,10 @@ const MentorFinderArticles : React.FC<MentorProfileArticlesProps> = ({
 
     return (
         <section className="transform -translate-y-[60px]">
-            <div className="w-full max-w-6xl mx-auto  flex justify-between items-center">
+            <div className="w-full max-w-6xl mx-auto flex justify-between items-center">
                 <div className="pl-5 pr-5 relative transform -translate-y-[50px]">
-                    <span className="text-base font-bold  global--text-link">Artykuły</span>
-                    <div className="w-full absolute h-1  left-0 global--bg-blue transform translate-y-3"></div>
+                    <span className="text-base font-bold  text-app-blue">Artykuły</span>
+                    <div className="w-full absolute h-1  left-0 bg-app-blue transform translate-y-3"></div>
                 </div>
             </div>
 
@@ -33,10 +33,10 @@ const MentorFinderArticles : React.FC<MentorProfileArticlesProps> = ({
                                      onClick={() => openArticleModal(article)}>
                                     <div className="absolute inset-0 p-4 flex flex-col rounded-md justify-end" style={{backgroundColor: `${mentor.profile.user_avatar_color}30`}}>
                                         <div className="p-4 rounded-md" style={{backgroundColor: `${mentor.profile.user_avatar_color}95`}}>
-                                            <h3 className="font-body global--text-black font-semibold text-xl mb-2 leading-tight">
+                                            <h3 className="text-app-black font-semibold text-xl mb-2 leading-tight">
                                                 {article.title}
                                             </h3>
-                                            <p className="font-body global--text-dark text-xs leading-relaxed line-clamp-4">
+                                            <p className="text-app-dark text-xs leading-relaxed line-clamp-4">
                                                 {article.summary}
                                             </p>
                                         </div>
@@ -47,7 +47,7 @@ const MentorFinderArticles : React.FC<MentorProfileArticlesProps> = ({
                     </div>
                 ) : (
                     <div className="mt-10 mb-10 max-w-6xl mx-auto px-4">
-                        <p className="font-body text-center text-base global--text-dark font-semibold">Brak stworzonych artykułów</p>
+                        <p className="text-center text-base text-app-dark font-semibold">Brak stworzonych artykułów</p>
                     </div>
                 )}
             </div>

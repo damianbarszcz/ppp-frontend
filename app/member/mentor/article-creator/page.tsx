@@ -7,8 +7,7 @@ import { useAuth } from "@/app/context/AuthContext";
 import ProtectedRoute from '@/app/routes/protected/ProtectedRoute';
 import Navigation from "@/app/components/navigation/Navigation";
 import ArticleCreatorForm from "@/app/member/mentor/article-creator/ArticleCreatorForm";
-import {ArticleValidationError}  from '@/app/types/article.types';
-import {ArticleValidationFrontendError} from "@/app/types";
+import {ArticleValidationFrontendError,ValidationError} from "@/app/types";
 
 export default function ArticleCreatorPage() {
     const router = useRouter();
@@ -37,7 +36,7 @@ export default function ArticleCreatorPage() {
         });
     };
 
-    const getValidationErrors = (errors: ArticleValidationError[]): void => {
+    const getValidationErrors = (errors: ValidationError[]): void => {
             clearAllErrors();
 
         const newErrors: ArticleValidationFrontendError = {
@@ -47,46 +46,40 @@ export default function ArticleCreatorPage() {
             contentError: ""
         };
 
-            errors.forEach((error) : void => {
-                switch (error.field) {
-                    case 'title':
-                        newErrors.titleError = error.message;
-                        break;
-                    case 'summary':
-                        newErrors.summaryError = error.message;
-                        break;
-                    case 'thumbnail_url':
-                        newErrors.thumbnailUrlError = error.message;
-                        break;
-                    case 'content':
-                        newErrors.contentError = error.message;
-                        break;
-                    default:
-                }
-            });
+        errors.forEach((error) : void => {
+            switch (error.field) {
+                case 'title':
+                    newErrors.titleError = error.message;
+                    break;
+                case 'summary':
+                    newErrors.summaryError = error.message;
+                    break;
+                case 'thumbnail_url':
+                    newErrors.thumbnailUrlError = error.message;
+                    break;
+                case 'content':
+                    newErrors.contentError = error.message;
+                    break;
+                default:
+            }
+        });
 
-            setValidationErrors(newErrors);
+        setValidationErrors(newErrors);
     };
 
     const createArticle = async (e: React.FormEvent) : Promise<void> => {
         e.preventDefault();
-
         if(!user?.id)  return
         clearAllErrors();
 
         try {
-            const response = await axios.post(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.article.createArticle}`, {
+            const response = await axios.post(
+                `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.article.createArticle}`, {
                     title, content, summary, content_type: contentType, thumbnail_url: thumbnailUrl, user_id: user.id,
                 }
             );
 
             if (response.data.success) {
-                setTitle('');
-                setSummary('');
-                setContent('');
-                setThumbnailUrl('');
-                setContentType('free');
-
                 sessionStorage.setItem('articleSuccessMessage', response.data.message);
                 router.push(`/member/mentor/home`);
             }
@@ -96,7 +89,7 @@ export default function ArticleCreatorPage() {
             } else if (error.response?.status === 400 && error.response?.data?.errors) {
                 getValidationErrors(error.response.data.errors);
             } else {
-                console.error('Wystąpił błąd:', error.message);
+                console.error('Wystąpił błąd podczas tworzenia artykułu:', error.message);
             }
         }
     }

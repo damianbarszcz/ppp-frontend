@@ -20,7 +20,8 @@ export default function FollowersPage() {
         const fetchFollowers = async (): Promise<void> => {
             if (!user?.id) return;
             try {
-                const response = await axios.get(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.follower.getFollowers + user.id}`);
+                const response = await axios.get(
+                    `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.follower.getFollowers + user.id}`);
 
                 if (response.data.success) {
                     setFollowers(response.data.data);

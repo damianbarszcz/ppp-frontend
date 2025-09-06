@@ -32,7 +32,8 @@ export default function HomePage() {
         const fetchArticles = async () : Promise<void> => {
             if (!user?.id) return;
             try {
-                const response = await axios.get(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.article.getArticles + user.id}`);
+                const response = await axios.get(
+                    `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.article.getArticles + user.id}`);
                 if (response.data.success) {
                     setArticles(response.data.data);
                 }
@@ -43,7 +44,8 @@ export default function HomePage() {
         const fetchFollowers  = async () : Promise<void> => {
             if (!user?.id) return;
             try {
-                const response = await axios.get(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.follower.getFollowers + user.id}`);
+                const response = await axios.get(
+                    `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.follower.getFollowers + user.id}`);
                 if (response.data.success) {
                     setFollowers(response.data.data);
                 }

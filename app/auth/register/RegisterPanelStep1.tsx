@@ -2,30 +2,15 @@
 import React from "react";
 import Input from "@/app/components/ui/Input";
 import Button from "@/app/components/ui/Button";
+import {RegisterPanelStep1Props} from "@/app/types";
 
-interface RegisterPanelStep1Props {
-    nextStep: () => void;
-    updateFormData: (data: Partial<FormDataType>) => void;
-    formData: FormDataType;
-    nameError: string;
-    surnameError: string;
-    emailError: string;
-    passwordError: string
-}
-
-interface FormDataType {
-    name: string;
-    surname: string;
-    email: string;
-    password: string;
-}
-
-const RegisterPanelStep1: React.FC<RegisterPanelStep1Props> = ({ nextStep, updateFormData, formData,
-    nameError,surnameError,emailError,passwordError }) => {
+const RegisterPanelStep1: React.FC<RegisterPanelStep1Props> = ({
+     nextStep, updateFormData, formData,
+     nameError,surnameError,emailError,passwordError } : RegisterPanelStep1Props) => {
 
     return (
         <div className="m-auto max-w-md flex flex-col">
-            <form onSubmit={(e) => { e.preventDefault(); nextStep(); }} className="mt-10 w-full">
+            <form onSubmit={nextStep} className="mt-10 w-full">
                 <div className="flex gap-4">
                     <div className="mb-10">
                         <Input
@@ -84,10 +69,12 @@ const RegisterPanelStep1: React.FC<RegisterPanelStep1Props> = ({ nextStep, updat
                     />
                 </div>
 
-                <Button type="submit" uiType="light" size="longSize">Kontynuuj</Button>
+                <div className="text-center">
+                    <Button type="submit" uiType="light" size="fullSize">Kontynuuj</Button>
+                </div>
             </form>
         </div>
     );
 }
 
-export default  RegisterPanelStep1;
+export default RegisterPanelStep1;

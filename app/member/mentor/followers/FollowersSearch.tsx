@@ -32,7 +32,7 @@ const FollowersSearch: React.FC<FollowersSearchProps> = ({followers, onSearch}: 
     return (
         <div className="m-auto mt-5 w-full max-w-[650px]">
             <div>
-                <h1 className="text-3xl font-bold mb-8 font-body global--text-dark">Obserwatorzy ({followers.length})</h1>
+                <h1 className="text-3xl mb-8 font-bold text-app-dark">Obserwatorzy ({followers.length})</h1>
             </div>
 
             <div className="relative">

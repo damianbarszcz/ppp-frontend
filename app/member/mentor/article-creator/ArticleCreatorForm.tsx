@@ -23,7 +23,7 @@ const ArticleCreatorForm: React.FC<ArticleFormProps> = ({
         <section className="max-w-4xl mx-auto py-10 px-4">
             <div className="global--border-d-white rounded-md p-10">
                 <header>
-                    <h1 className="text-2xl font-bold mb-8 font-body text-center global--text-dark">Co nowego dzisiaj tworzymy ?</h1>
+                    <h1 className="text-2xl font-bold mb-8 text-center text-app-dark">Co nowego dzisiaj tworzymy ?</h1>
                 </header>
 
                 <form onSubmit={createArticle}>
@@ -85,7 +85,7 @@ const ArticleCreatorForm: React.FC<ArticleFormProps> = ({
                     </div>
 
                     <div className="mb-10">
-                        <label className="font-body text-base font-medium mb-4 block global--text-dark">Typ treści</label>
+                        <label className="text-base font-medium mb-4 block text-app-dark">Typ treści</label>
 
                         <div className="flex gap-6">
                             <div className={`${contentType === "free" ? "global--border-blue" : "global--border-d-white"} p-5 rounded-md cursor-pointer flex-1 h-28`}
@@ -98,7 +98,7 @@ const ArticleCreatorForm: React.FC<ArticleFormProps> = ({
                                     <h3 className="font-body text-lg font-medium global--text-dark">Bezpłatna</h3>
                                 </div>
 
-                                <p className="font-body text-sm global--text-silver mb-3">
+                                <p className="font-body text-sm text-app-silver mb-3">
                                     Treść dostępna dla wszystkich użytkowników
                                 </p>
                             </div>
@@ -106,10 +106,10 @@ const ArticleCreatorForm: React.FC<ArticleFormProps> = ({
                             <div className={`${contentType === "paid" ? "global--border-blue" : "global--border-d-white"} p-5 rounded-md cursor-pointer flex-1 h-28`} onClick={() => setContentType("paid")}>
                                 <div className="flex items-center mb-3">
                                     <div className={`w-4 h-4 rounded-full border-2 mr-3 flex items-center justify-center ${contentType === "paid" ? "border-blue-500" : "border-gray-400"}`}>
-                                        {contentType === "paid" && <div className="w-2 h-2 bg-blue-500 rounded-full"></div>}
+                                        {contentType === "paid" && <div className="w-2 h-2 bg-app-blue rounded-full"></div>}
                                     </div>
 
-                                    <h3 className="font-body text-lg font-medium global--text-dark">Płatna</h3>
+                                    <h3 className="font-body text-lg font-medium text-app-dark">Płatna</h3>
                                 </div>
 
                                 <p className="font-body text-sm global--text-silver mb-3">

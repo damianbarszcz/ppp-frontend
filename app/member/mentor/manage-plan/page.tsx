@@ -21,7 +21,8 @@ export default function  ManagePlanPage() {
         if (!user?.id) return;
 
         try {
-            const response = await axios.post(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.managePlan.createMentorPlusSession}`,
+            const response = await axios.post(
+                `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.managePlan.createMentorPlusSession}`,
                 {user_id: user.id});
 
             const { sessionId } = response.data.data;
@@ -49,7 +50,7 @@ export default function  ManagePlanPage() {
                 </button>
             </div>
 
-            <main className="global--bg-black flex flex-col justify-start items-center h-[100vh]">
+            <main className="bg-app-black flex flex-col justify-start items-center h-[100vh]">
                 <ManagePlanHeader />
                 <ManagePlanPricing handleSubscribe = {handleSubscribe} />
             </main>

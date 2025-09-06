@@ -23,8 +23,3 @@ export interface ArticleFormProps {
     createArticle: (e: React.FormEvent) => void;
     validationErrors: ArticleValidationFrontendError;
 }
-
-export interface ArticleValidationError {
-    field: string;
-    message: string;
-}

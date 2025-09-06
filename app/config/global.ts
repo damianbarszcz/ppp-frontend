@@ -1,10 +1,15 @@
 export const API_CONFIG = {
     baseUrl: process.env.NEXT_PUBLIC_NEST_URL || 'http://localhost:8000',
+    prospectorHomeUrl: '/member/prospector/home',
+    mentorHomeUrl:  '/member/mentor/home',
+
     endpoints: {
         //Auth routes
         auth:{
             handleLogin: '/api/auth/login',
             handleRegister: '/api/auth/register',
+            handleRegisterStep1: '/api/auth/register-validate-step1',
+            handleRegisterStep2: '/api/auth/register-validate-step2'
         },
         //User routes
         user:{

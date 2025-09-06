@@ -4,7 +4,7 @@ import styles from "./Button.module.css";
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     type:"button" | "submit" | "reset" | undefined
     uiType: "primary" | "light" | "dark" | "dark-outline" | "blue-outline";
-    size: "regularSize" | "longSize" | "smallSize" | "extraSmallSize";
+    size: "fullSize" | "regularSize" | "longSize" | "smallSize" | "extraSmallSize";
 }
 
 const Button: React.FC<ButtonProps> = ({children,type,uiType,size,...props }) => {
@@ -35,6 +35,8 @@ const Button: React.FC<ButtonProps> = ({children,type,uiType,size,...props }) =>
             case "regularSize":
                 return "text-sm w-40 p-3.5";
             case "longSize":
+                return "text-base w-full p-4";
+            case "fullSize":
                 return "text-base w-full p-4";
             default:
                 return "text-base w-full p-4";

@@ -20,8 +20,9 @@ const LoginPanel : React.FC<LoginProps> = ({
             <Brand uiType="dark"/>
 
             <header className="text-center mt-10">
-                <h2 className="text-3xl font-bold global--text-dark">Witaj ponownie</h2>
-                <p className="global--text-silver mt-5 text-base font-regular">
+                <h2 className="text-3xl font-bold text-app-dark">Witaj ponownie</h2>
+
+                <p className="text-app-silver mt-5 ml-5 mr-5 text-base font-medium">
                     Wprowadź swój adres e-mail i hasło, aby uzyskać dostęp do swojego konta
                 </p>
             </header>
@@ -55,12 +56,14 @@ const LoginPanel : React.FC<LoginProps> = ({
                     />
                 </div>
 
-                <Button type="submit" uiType="dark" size="longSize">Zaloguj</Button>
+                <div className="text-center">
+                    <Button type="submit" uiType="dark" size="fullSize">Zaloguj</Button>
+                </div>
             </form>
 
             <div className="text-center mt-10 flex justify-center">
-                <p className="text-base global--text-dark">Nie masz konta?</p>
-                <Link href="/auth/register" className="global--text-link ml-2 text-base font-semibold" target="_self">Zarejestruj się</Link>
+                <p className="text-base text-app-dark">Nie masz konta?</p>
+                <Link href="/auth/register" className="text-app-blue ml-2 text-base font-semibold" target="_self">Zarejestruj się</Link>
             </div>
         </div>
     );

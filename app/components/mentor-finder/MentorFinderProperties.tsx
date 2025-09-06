@@ -24,7 +24,7 @@ const MentorFinderProperties : React.FC<MentorProfilePropertiesProps> = ({
 
             <div className="max-w-6xl m-auto mt-10 text-center  transform -translate-y-[120px]">
                 <figure className="relative m-auto h-36 w-36 rounded-full" style={{ backgroundColor: mentor.profile.user_avatar_color }}>
-                        <span className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-body font-semibold text-5xl ${textColorClass}`}>
+                        <span className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-semibold text-5xl ${textColorClass}`}>
                             {initials}
                         </span>
                 </figure>
@@ -32,30 +32,30 @@ const MentorFinderProperties : React.FC<MentorProfilePropertiesProps> = ({
                 <div className="mt-5 m-auto max-w-xl">
                     <div>
                         <header className="mb-2.5">
-                            <h1 className="font-body text-2xl font-regular global--text-dark font-semibold">
+                            <h1 className="text-2xl font-regular text-app-dark font-semibold">
                                 {mentor.profile.name} {mentor.profile.surname}
                             </h1>
                         </header>
 
                         <div className="mb-5">
-                               <span className="font-body text-base font-medium global--text-silver">
+                               <span className="text-base font-medium text-app-silver">
                                    {mentor.profile.username}
                                </span>
                         </div>
 
                         <div className="mb-2.5">
-                            <p className="font-body text-sm font-regular global--text-silver">
+                            <p className="text-sm font-regular text-app-silver">
                                 {mentor.profile.biogram}
                             </p>
                         </div>
                     </div>
 
                     <div className="flex justify-center mt-4">
-                        <p className="mt-4 font-body text-base global--text-silver mr-5">
-                            <span className="font-semibold global--text-dark">{articles.length}</span> artykuły
+                        <p className="mt-4 text-base text-app-silver mr-5">
+                            <span className="font-semibold text-app-dark">{articles.length}</span> artykuły
                         </p>
-                        <p className="mt-4 font-body text-base global--text-silver ml-5">
-                            <span className="font-semibold global--text-dark">{followers.length}</span> obserwujących
+                        <p className="mt-4 text-base text-app-silver ml-5">
+                            <span className="font-semibold text-app-dark">{followers.length}</span> obserwujących
                         </p>
                     </div>
                 </div>

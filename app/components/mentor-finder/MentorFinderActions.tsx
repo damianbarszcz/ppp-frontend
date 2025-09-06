@@ -24,7 +24,7 @@ const MentorFinderActions : React.FC<MentorFinderActionsProps> = ({
     };
 
     return (
-        <div className="w-full max-w-6xl mx-auto flex items-center justify-end  transform -translate-y-[75px]">
+        <div className="w-full max-w-6xl mx-auto flex items-center justify-end transform -translate-y-[75px]">
             <div className="mr-5">
                 <Button type="button" uiType="dark-outline" size="smallSize" onClick={onSubscribe}>Subskrybuj</Button>
             </div>
