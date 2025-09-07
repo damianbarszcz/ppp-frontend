@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, memo, useCallback } from "react";
+import React, { useEffect, useRef, memo } from "react";
 import { ActiveParticipant } from "@/app/types";
 import { getInitials } from "@/app/components/utils/avatar";
 import { isDarkColor } from "@/app/components/utils/color";
@@ -14,16 +14,15 @@ interface ParticipantsPanelProps {
     isSpeaking?: boolean;
 }
 
-// Memoizowany komponent dla pojedynczego uczestnika
 const ParticipantVideo = memo(({
-                                   participant,
-                                   isCurrentUser,
-                                   hasVideo,
-                                   stream,
-                                   localStream,
-                                   isUserSpeaking,
-                                   participantsCount
-                               }: {
+   participant,
+   isCurrentUser,
+   hasVideo,
+   stream,
+   localStream,
+   isUserSpeaking,
+   participantsCount
+}: {
     participant: ActiveParticipant;
     isCurrentUser: boolean;
     hasVideo: boolean;
@@ -33,8 +32,6 @@ const ParticipantVideo = memo(({
     participantsCount: number;
 }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
-
-    // Effect dla video
     useEffect(() => {
         if (!videoRef.current || !hasVideo) return;
 
@@ -50,48 +47,29 @@ const ParticipantVideo = memo(({
     const textColorClass = isDark ? 'text-white' : 'text-black';
 
     return (
-        <div className={`relative bg-black rounded-lg overflow-hidden transition-all duration-500 ease-in-out transform hover:scale-105 ${
-            isUserSpeaking ? 'ring-4 ring-green-400 ring-opacity-80 shadow-lg shadow-green-400/50' : ''
-        }`} style={{ minHeight: '200px' }}>
-
+        <div className={`relative bg-app-black rounded-lg overflow-hidden ${isUserSpeaking ? 'ring-4 ring-green-400 ring-opacity-80 shadow-lg shadow-green-400/50' : ''}`} style={{ minHeight: '200px' }}>
             {hasVideo ? (
                 <div className="w-full h-full relative">
-                    <video
-                        ref={videoRef}
-                        autoPlay
-                        muted={isCurrentUser}
-                        playsInline
-                        className="w-full h-full object-cover rounded-lg"
-                        style={{
-                            transform: isCurrentUser ? "scaleX(-1)" : "none",
-                            aspectRatio: "16/9"
-                        }}
-                    />
+                    <video ref={videoRef} autoPlay muted={isCurrentUser} playsInline className="w-full h-full object-cover rounded-lg" style={{transform: isCurrentUser ? "scaleX(-1)" : "none", aspectRatio: "16/9"}}/>
                 </div>
             ) : (
-                <div className="w-full h-full bg-black flex items-center justify-center rounded-lg"
+                <div className="w-full h-full bg-app-black flex items-center justify-center rounded-lg"
                      style={{ aspectRatio: "16/9" }}>
-                    <figure
-                        className={`relative rounded-full transition-all duration-300 ${
-                            isUserSpeaking ? 'ring-4 ring-green-400 ring-opacity-80 scale-110' : ''
-                        }`}
+                    <figure className={`relative rounded-full transition-all duration-300 ${isUserSpeaking ? 'ring-4 ring-green-400 ring-opacity-80 scale-110' : ''}`}
                         style={{
                             backgroundColor: participant.profile.user_avatar_color,
                             width: getAvatarSize(participantsCount),
                             height: getAvatarSize(participantsCount)
                         }}>
-                        <span className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-semibold ${
-                            getTextSize(participantsCount)
-                        } ${textColorClass}`}>
+                        <span className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-semibold ${getTextSize(participantsCount)} ${textColorClass}`}>
                             {initials}
                         </span>
                     </figure>
                 </div>
             )}
 
-            {/* Nazwa uczestnika */}
             <div className={`absolute bottom-2 left-2 px-2 py-1 rounded-md transition-all duration-200 backdrop-blur-sm ${
-                isUserSpeaking ? 'bg-green-600 bg-opacity-90 shadow-lg' : 'bg-black bg-opacity-60'
+                isUserSpeaking ? 'bg-app-green bg-opacity-90 shadow-lg' : 'bg-app-black bg-opacity-60'
             }`}>
                 <span className="text-white text-sm font-medium flex items-center gap-2">
                     {isUserSpeaking && <SpeakingIndicator />}
@@ -100,34 +78,23 @@ const ParticipantVideo = memo(({
                 </span>
             </div>
 
-            {/* Status indicators */}
-            <StatusIndicators
-                hasVideo={hasVideo}
-                isMuted={!isCurrentUser || !isUserSpeaking}
-                isUserSpeaking={isUserSpeaking}
-            />
+            <StatusIndicators hasVideo={hasVideo} isMuted={!isCurrentUser || !isUserSpeaking} isUserSpeaking={isUserSpeaking} />
         </div>
     );
 });
 
 ParticipantVideo.displayName = 'ParticipantVideo';
 
-// Komponent dla wskaźnika mówienia
 const SpeakingIndicator = memo(() => (
     <span className="flex gap-0.5">
         {[0, 200, 400].map(delay => (
-            <span
-                key={delay}
-                className="w-1 h-3 bg-green-300 rounded animate-pulse"
-                style={{ animationDelay: `${delay}ms` }}
-            />
+            <span key={delay} className="w-1 h-3 bg-app-green rounded animate-pulse" style={{ animationDelay: `${delay}ms` }}/>
         ))}
     </span>
 ));
 
 SpeakingIndicator.displayName = 'SpeakingIndicator';
 
-// Komponent dla wskaźników statusu
 const StatusIndicators = memo(({ hasVideo, isMuted, isUserSpeaking }: {
     hasVideo: boolean;
     isMuted: boolean;
@@ -135,7 +102,7 @@ const StatusIndicators = memo(({ hasVideo, isMuted, isUserSpeaking }: {
 }) => (
     <div className="absolute top-2 right-2 flex gap-1">
         <div className={`p-1.5 rounded-full transition-all duration-200 backdrop-blur-sm ${
-            hasVideo ? 'bg-green-500 shadow-lg shadow-green-500/50' : 'bg-gray-500'
+            hasVideo ? 'bg-app-green shadow-lg shadow-green-500/50' : 'bg-app-silver'
         }`}>
             <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24" fill="white">
                 {hasVideo ? (
@@ -147,7 +114,7 @@ const StatusIndicators = memo(({ hasVideo, isMuted, isUserSpeaking }: {
         </div>
 
         <div className={`p-1.5 rounded-full transition-all duration-200 backdrop-blur-sm ${
-            !isMuted ? (isUserSpeaking ? 'bg-green-500 shadow-lg shadow-green-500/50 animate-pulse' : 'bg-green-500') : 'bg-red-500'
+            !isMuted ? (isUserSpeaking ? 'bg-app-green shadow-lg shadow-green-500/50 animate-pulse' : 'bg-app-green') : 'bg-app-red'
         }`}>
             <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24" fill="white">
                 {!isMuted ? (
@@ -162,7 +129,6 @@ const StatusIndicators = memo(({ hasVideo, isMuted, isUserSpeaking }: {
 
 StatusIndicators.displayName = 'StatusIndicators';
 
-// Funkcje pomocnicze
 const getGridLayout = (count: number): string => {
     if (count === 1) return "grid-cols-1";
     if (count === 2) return "grid-cols-1 lg:grid-cols-2";
@@ -188,24 +154,22 @@ const getTextSize = (count: number): string => {
     return "text-lg";
 };
 
-// Główny komponent
 const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
-                                                                 activeParticipants = [],
-                                                                 participantsCount,
-                                                                 localStream = null,
-                                                                 streams = new Map(),
-                                                                 isVideoOn = false,
-                                                                 isMuted = true,
-                                                                 isSpeaking = false
-                                                             }) => {
+     activeParticipants = [],
+     participantsCount,
+     localStream = null,
+     streams = new Map(),
+     isVideoOn = false,
+     isMuted = true,
+     isSpeaking = false
+}) => {
     const { user } = useAuth();
 
-    // Memoizowane wartości
+
     const visibleParticipants = React.useMemo(() =>
             activeParticipants.slice(0, 12),
         [activeParticipants]
     );
-
     const gridLayout = React.useMemo(() =>
             getGridLayout(participantsCount),
         [participantsCount]
@@ -214,7 +178,6 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
     return (
         <section className="w-full col-span-9 row-span-11">
             <div className="w-full h-full bg-gray-900 rounded-lg overflow-hidden relative p-4">
-                {/* Grid z uczestnikami */}
                 <div className={`grid gap-4 h-full transition-all duration-700 ease-in-out auto-rows-fr ${gridLayout}`}>
                     {visibleParticipants.map((participant) => {
                         const isCurrentUser = participant.id === user?.id;
@@ -236,15 +199,13 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
                     })}
                 </div>
 
-                {/* Informacja o dodatkowych uczestnikach */}
                 {participantsCount > 12 && (
-                    <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded-lg">
+                    <div className="absolute bottom-4 right-4 bg-app-black bg-opacity-70 text-app-white px-3 py-2 rounded-lg">
                         <span className="text-sm">+{participantsCount - 12} więcej uczestników</span>
                     </div>
                 )}
             </div>
 
-            {/* CSS dla animacji */}
             <style jsx>{`
                 @keyframes pulse-border {
                     0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
@@ -260,10 +221,6 @@ const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
                         transform: scale(1.05);
                         box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
                     }
-                }
-
-                .auto-rows-fr {
-                    grid-auto-rows: 1fr;
                 }
             `}</style>
         </section>
