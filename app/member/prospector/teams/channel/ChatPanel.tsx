@@ -32,10 +32,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     const {user} = useAuth();
 
     const formatTimestamp = (timestamp: string) => {
-        return new Date(timestamp).toLocaleTimeString('pl-PL', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        return new Date(timestamp).toLocaleTimeString('pl-PL', {hour: '2-digit', minute: '2-digit'});
     };
 
     return(
@@ -57,7 +54,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                     {activeView === 'chat' ? (
                         <div className="space-y-3">
                             {messages.length === 0 ? (
-                                <div className="text-center text-gray-500 mt-10">
+                                <div className="text-center text-app-silver mt-10">
                                     <span className="block text-base font-medium text-app-dark">Witamy na kanale!</span>
                                     <span className="block mt-2 text-sm text-app-silver">Nikt jeszcze nie napisał żadnej wiadomości.</span>
                                 </div>

@@ -16,13 +16,12 @@ export function getInitials(channelTitle: string): string {
 }
 
 const TeamInvitationsList: React.FC<TeamInvitationListProps> = ({
-    invitations,
     receivedInvitations,
     handleAcceptInvitation,
     handleRejectInvitation
 }: TeamInvitationListProps) => {
 
-    const hasAnyInvitations = invitations.length > 0 || receivedInvitations.length > 0;
+    const hasAnyInvitations = receivedInvitations.length > 0;
     if (!hasAnyInvitations) {
         return (
             <section>
@@ -58,14 +57,10 @@ const TeamInvitationsList: React.FC<TeamInvitationListProps> = ({
                                                 <h2 className="text-base font-medium text-app-dark">{team.title}</h2>
                                             </div>
                                         </div>
-
-                                        <div className="mt-4 w-full h-px global--bg-d-white"></div>
-
+                                        <div className="mt-4 w-full h-px bg-app-dark-white"></div>
                                         <div className="mt-5">
                                             <div>
-                                                <p className="text-sm text-app-silver">
-                                                    {team.team_details.description}
-                                                </p>
+                                                <p className="text-sm text-app-silver">{team.team_details.description}</p>
                                             </div>
 
                                             <div className="mt-6 flex justify-end">
