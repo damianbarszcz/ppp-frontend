@@ -1,5 +1,4 @@
-import React, {useState} from "react";
-import {useRouter} from "next/navigation";
+import React from "react";
 import { useSubscription } from '@/app/context/SubscriptionContext';
 import { User,Team } from '@/app/types';
 import TeamNav from "@/app/components/navigation/TeamNav";
@@ -29,16 +28,6 @@ function Navigation({
     team
 }: NavigationProps) {
     const { hasMentorPlus } = useSubscription();
-    const router = useRouter();
-    const [searchValue, setSearchValue] = useState("");
-
-    const handleSearchSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (searchValue.trim() !== "") {
-            router.push(`/member/prospector/mentor-search?username=${encodeURIComponent(searchValue.trim())}`);
-        }
-    };
-
     return (
         type === "standard" ? (
             <StandardNav
@@ -50,9 +39,6 @@ function Navigation({
                 setAccountDropdownOpen={setAccountDropdownOpen}
                 setNotifyDropdownOpen={setNotifyDropdownOpen}
                 hasMentorPlus={hasMentorPlus}
-                searchValue={searchValue}
-                setSearchValue={setSearchValue}
-                handleSearchSubmit={handleSearchSubmit}
             />
         ) : (
             <TeamNav

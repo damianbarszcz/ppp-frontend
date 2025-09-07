@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, forwardRef} from "react";
 import styles from "./Input.module.css";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>{
@@ -13,7 +13,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>{
     validateError: string;
 }
 
-const Input: React.FC<InputProps> = ({placeholder, type, name, uiType, labelCaption, validateError, required,onChange, isLabel, ...rest })  => {
+const Input = forwardRef<HTMLInputElement, InputProps>(({placeholder, type, name, uiType, labelCaption, validateError, required,onChange, isLabel, ...rest }, ref)  => {
     const inputStyle = uiType === "light" ? styles.input_light : styles.input_dark;
     const labelStyle = uiType === "light" ? styles.label_light : styles.label_dark;
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -30,6 +30,7 @@ const Input: React.FC<InputProps> = ({placeholder, type, name, uiType, labelCapt
                     {labelCaption}
                 </label> : ''}
                 <input
+                    ref={ref}
                     className={`${styles.input} ${inputStyle} w-full font-medium text-base`}
                     name={name}
                     type={isPasswordVisible ? "text" : type}
@@ -59,6 +60,7 @@ const Input: React.FC<InputProps> = ({placeholder, type, name, uiType, labelCapt
             : (
         <div>
             <input
+                ref={ref}
                 className={` ${name === "account-search" ? styles.input__search_main + ' text-base'  : styles.input__search_nav + ' text-sm' } ${inputStyle} w-full font-body font-medium`}
                 name={name}
                 type={isPasswordVisible ? "text" : type}
@@ -70,6 +72,6 @@ const Input: React.FC<InputProps> = ({placeholder, type, name, uiType, labelCapt
             />
         </div> )
     )
-};
+});
 
 export default Input;

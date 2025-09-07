@@ -3,6 +3,8 @@ import Input from "@/app/components/ui/Input";
 import Textarea from "@/app/components/ui/Textarea";
 import Button from "@/app/components/ui/Button";
 import {Contact} from "@/app/types";
+import {getInitials} from "@/app/components/utils/avatar";
+import {isDarkColor} from "@/app/components/utils/color";
 
 const AddTeamModal: React.FC<{
     setTeamModalOpen: (open: boolean) => void;
@@ -32,26 +34,21 @@ const AddTeamModal: React.FC<{
     const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
-        if (searchTerm.trim() === "") {
-            setFilteredContacts(userContacts);
-        } else {
-            const filtered = userContacts.filter(contact => {
-                const profile = contact.contact_user?.profile;
-                if (!profile) return false;
+        const filtered = userContacts.filter(contact => {
+            const profile = contact.contact_user?.profile;
+            if (!profile) return false;
+            const { username, name, surname } = profile;
+            const searchLower = searchTerm.toLowerCase();
 
-                const { username, name, surname } = profile;
-                const searchLower = searchTerm.toLowerCase();
-
-                return (
-                    username.toLowerCase().includes(searchLower) ||
-                    name.toLowerCase().includes(searchLower) ||
-                    surname.toLowerCase().includes(searchLower) ||
-                    `${name} ${surname}`.toLowerCase().includes(searchLower)
-                );
-            });
-            setFilteredContacts(filtered);
-        }
-    }, [searchTerm, userContacts]);
+            return (
+                username.toLowerCase().includes(searchLower) ||
+                name.toLowerCase().includes(searchLower) ||
+                surname.toLowerCase().includes(searchLower) ||
+                `${name} ${surname}`.toLowerCase().includes(searchLower)
+            );
+        });
+        setFilteredContacts(filtered);
+    }, [userContacts]);
 
     const handleContactToggle = (contactId: number) => {
         if (selectedContacts.includes(contactId)) {
@@ -110,12 +107,6 @@ const AddTeamModal: React.FC<{
                                         rows={3}
                                     />
                                 </div>
-
-                                {getFieldError('general') && (
-                                    <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-                                        {getFieldError('general')}
-                                    </div>
-                                )}
                             </div>
                         </div>
 
@@ -135,56 +126,42 @@ const AddTeamModal: React.FC<{
                                         Wybierz kontakty, które chcesz dodać do zespołu
                                     </p>
 
-                                    {userContacts.length > 0 ? (
-                                        <>
-                                            <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-md">
-                                                {filteredContacts.length > 0 ? (
-                                                    <div className="divide-y divide-gray-100">
-                                                        {filteredContacts.map((contact) => {
-                                                            const profile = contact.contact_user?.profile;
-                                                            if (!profile) return null;
+                                    {filteredContacts.length > 0 ? (
+                                        <div className="divide-y divide-gray-100">
+                                            {filteredContacts.map((contact) => {
+                                                const initials = getInitials(contact.contact_user?.profile.name, contact.contact_user?.profile.surname);
+                                                const isDark = isDarkColor(contact.contact_user?.profile.user_avatar_color);
+                                                const textColorClass = isDark ? 'text-white' : 'text-black';
 
-                                                            return (
-                                                                <label
-                                                                    key={contact.id}
-                                                                    className="flex items-center p-3 hover:bg-gray-50 cursor-pointer"
-                                                                >
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={isContactSelected(contact.contact_user_id)}
-                                                                        onChange={() => handleContactToggle(contact.contact_user_id)}
-                                                                        className="mr-3 h-4 w-4 text-blue-600 rounded border-gray-300"
-                                                                    />
-                                                                    <div className="flex items-center flex-1">
-                                                                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                                                                        <span className="text-sm font-medium text-blue-700">
-                                                                            {profile.name.charAt(0)}{profile.surname.charAt(0)}
-                                                                        </span>
-                                                                        </div>
-                                                                        <div>
-                                                                            <div className="font-medium text-gray-900">
-                                                                                {profile.name} {profile.surname}
-                                                                            </div>
-                                                                            <div className="text-sm text-gray-500">
-                                                                                @{profile.username}
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </label>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                ) : (
-                                                    <div className="p-4 text-center text-gray-500">
-                                                        {searchTerm ? "Nie znaleziono kontaktów" : "Brak kontaktów do wyświetlenia"}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </>
+                                                const profile = contact.contact_user?.profile;
+                                                if (!profile) return null;
+
+                                                return (
+                                                    <label key={contact.id} className="flex items-center p-3 hover:bg-gray-50 cursor-pointer">
+                                                        <input type="checkbox" checked={isContactSelected(contact.contact_user_id)}
+                                                            onChange={() => handleContactToggle(contact.contact_user_id)}
+                                                            className="mr-3 h-4 w-4 app-text-blue rounded border-gray-300"
+                                                        />
+
+                                                        <div className="flex items-center flex-1">
+                                                            <figure style={{ backgroundColor: contact.contact_user?.profile.user_avatar_color }} className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 ${textColorClass}`}>
+                                                                <span className="text-sm font-medium ">
+                                                                    {initials}
+                                                                </span>
+                                                            </figure>
+
+                                                            <div>
+                                                                <div className="font-medium text-app-dark">{contact.contact_user?.profile.name} {contact.contact_user?.profile.surname}</div>
+                                                                <div className="text-sm text-app-silver">@{contact.contact_user?.profile.username}</div>
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                );
+                                            })}
+                                        </div>
                                     ) : (
                                         <div className="text-center p-6 bg-gray-50 rounded-md">
-                                            <p className="text-gray-500">Nie masz jeszcze kontaktów.</p>
-                                            <p className="text-sm text-gray-400 mt-1">Dodaj kontakty, aby móc ich zapraszać do zespołów.</p>
+                                            <p className="text-app-silver">Brak kontaktów spełniających kryteria wyszukiwania.</p>
                                         </div>
                                     )}
                                 </div>

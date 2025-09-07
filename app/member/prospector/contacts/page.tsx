@@ -172,7 +172,6 @@ export default function ContactsPage() {
         const error = validationErrors.find(err => err.field === fieldName);
         return error ? error.message : '';
     };
-
     const displayedContacts = filteredContacts.length > 0 ? filteredContacts : yourContacts;
     const displayedInvitations = filteredInvitations.length > 0 ? filteredInvitations : receivedInvitations;
 

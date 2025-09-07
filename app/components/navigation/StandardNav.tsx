@@ -2,11 +2,11 @@ import React from "react";
 import {getInitials} from "@/app/components/utils/avatar";
 import {isDarkColor} from "@/app/components/utils/color";
 import { User } from '@/app/types/user.types';
-import Input from "@/app/components/ui/Input";
 import Link from "next/link";
 import NavigationNotificationDropdown from "@/app/components/navigation/NavigationNotificationDropdown";
 import NavigationAccountDropdown from "@/app/components/navigation/NavigationAccountDropdown";
 import styles from "@/app/components/navigation/Navigation.module.css";
+import MentorSearchBox from "@/app/member/prospector/home/MentorSearchBox";
 
 interface StandardNavProps{
     user: User;
@@ -17,9 +17,6 @@ interface StandardNavProps{
     setNotifyDropdownOpen: (open: boolean) => void;
     setAccountDropdownOpen: (open: boolean) => void;
     hasMentorPlus: boolean;
-    searchValue: string;
-    setSearchValue: (value: string) => void;
-    handleSearchSubmit: (e: React.FormEvent) => void;
 }
 
 function StandardNav({
@@ -31,9 +28,6 @@ function StandardNav({
    setAccountDropdownOpen,
    setNotifyDropdownOpen,
    hasMentorPlus,
-   searchValue,
-   setSearchValue,
-   handleSearchSubmit,
 }: StandardNavProps) {
     const initials = getInitials(user.profile.name, user.profile.surname);
     const isDark = isDarkColor(user.profile.user_avatar_color);
@@ -65,24 +59,7 @@ function StandardNav({
 
                     { (activeSection !== 'home' && user?.account_type === "P") &&
                         <div className="nav-search ml-8 w-[300px]">
-                            <form onSubmit={handleSearchSubmit}  className="relative">
-                                <Input isLabel={false} labelCaption=""
-                                       name="nav-search"
-                                       type="search"
-                                       placeholder="Wyszukaj"
-                                       uiType="light"
-                                       value={searchValue}
-                                       validateError=""
-                                       onChange={(e) => setSearchValue(e.target.value)}
-                                />
-
-                                <button type="submit" className="absolute top-2.5 right-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5F6368">
-                                        <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14
-                                    83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
-                                    </svg>
-                                </button>
-                            </form>
+                            <MentorSearchBox name="nav-search" />
                         </div> }
 
                     <div className="nav-menu ml-8">

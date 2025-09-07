@@ -20,6 +20,7 @@ export default {
         'app-dark-blue': '#2f4ead',
         'app-light-yellow': '#ffe7ab',
         'app-dark-yellow': '#856f38',
+        'app-dark-gold': '#ffad41',
         'app-anthracite': '#272627',
       },
     },

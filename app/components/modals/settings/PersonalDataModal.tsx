@@ -8,8 +8,9 @@ interface PersonalDataModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSave: (data: any) => Promise<void>;
-    modalType: 'name' | 'username' | 'biogram'  | 'password' | null;
+    modalType: 'name' | 'username' | 'biogram'  | 'password' | 'mentor_subscribe_price' | null;
     currentUser: {
+        mentor_subscribe_price?: number;
         name: string;
         surname: string;
         username?: string;
@@ -44,6 +45,10 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({
                     currentPassword: '',
                     newPassword: '',
                     confirmPassword: ''
+                };
+            case 'mentor_subscribe_price':
+                return {
+                    mentorSubscribePrice: currentUser?.mentor_subscribe_price || ''
                 };
             default:
                 return {};
@@ -90,6 +95,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({
                 return 'Edytuj biogram';
             case 'password':
                 return 'Zmień hasło';
+            case 'mentor_subscribe_price':
+                return 'Podaj cene subskrybcji';
             default:
                 return 'Edytuj dane';
         }
@@ -135,6 +142,12 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({
                        <Input isLabel={true} labelCaption="Potwierdź nowe hasło" type="password" name="confirmPassword" placeholder="••••••••" uiType="light" value={formData.confirmPassword} validateError="" onChange={handleInputChange} />
                     </>
                 );
+            case 'mentor_subscribe_price':
+                return (
+                    <>
+                        <Input isLabel={true} labelCaption="Cena" name="mentorSubscribePrice" type="number" placeholder="Wprowadź cenę subskrybcji" uiType="light" step="0.01"  value={formData.mentorSubscribePrice || 0} validateError="" onChange={handleInputChange}/>
+                    </>
+                );
 
             default:
                 return null;
@@ -157,8 +170,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({
                 </div>
 
                 {serverError && (
-                    <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
-                        <p className="text-red-800 text-sm">{serverError}</p>
+                    <div className="mb-4 p-4 bg-red-50 border border-app-dark-red rounded-md">
+                        <p className="text-app-red text-sm">{serverError}</p>
                     </div>
                 )}
 

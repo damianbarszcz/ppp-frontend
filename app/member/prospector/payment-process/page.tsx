@@ -1,19 +1,25 @@
 "use client";
-import React, { useEffect, useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import React, {Suspense, useEffect, useState} from "react";
+import {useSearchParams} from "next/navigation";
 import axios from "axios";
-import { API_CONFIG } from "@/app/config/global";
-import PaymentProcessSuccess from "@/app/member/mentor/manage-plan/payment-process/PaymentProcessSuccess";
-import PaymentProcessLoading from "@/app/member/mentor/manage-plan/payment-process/PaymentProcessLoading";
-import PaymentProcessError from "@/app/member/mentor/manage-plan/payment-process/PaymentProcessError";
+import {API_CONFIG} from "@/app/config/global";
 import Loader from "@/app/components/ui/Loader";
+import PaymentProcessLoading from "./PaymentProcessLoading";
+import PaymentProcessError from "./PaymentProcessError";
+import PaymentProcessSuccess from "./PaymentProcessSuccess";
 
 function PaymentProcessContent() {
     const searchParams = useSearchParams();
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
+    const [username, setUsername] = useState<string>('');
 
     useEffect(() : void  => {
         const sessionId = searchParams.get('session_id');
+        const mentorUsername = searchParams.get('username');
+        if (mentorUsername) {
+            setUsername(mentorUsername);
+        }
+
         if (sessionId) {
             handlePayment(sessionId);
         } else {
@@ -37,14 +43,16 @@ function PaymentProcessContent() {
     };
 
     const handleGoBack = (): void => {
-        window.location.href = API_CONFIG.mentorHomeUrl;
+        window.location.href = username
+            ? `/member/prospector/mentor-search?username=${username}`
+            : '/member/prospector/mentor-search';
     };
 
     return (
         <main>
-            { status === 'loading' && ( <PaymentProcessLoading /> )}
-            { status === 'error' && ( <PaymentProcessError  handleGoBack = { handleGoBack } /> )}
-            { status === 'success' && ( <PaymentProcessSuccess  handleGoBack = { handleGoBack } /> )}
+            {status === 'loading' && (<PaymentProcessLoading />)}
+            {status === 'error' && (<PaymentProcessError handleGoBack={handleGoBack} username={username} />)}
+            {status === 'success' && (<PaymentProcessSuccess handleGoBack={handleGoBack} username={username} />)}
         </main>
     );
 }

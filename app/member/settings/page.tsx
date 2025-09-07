@@ -16,7 +16,7 @@ export default function SettingsPage() {
     const [accountDropdownOpen,setAccountDropdownOpen] = useState(false);
     const [notifyDropdownOpen, setNotifyDropdownOpen] = useState(false);
     const [activeSection, setActiveSection] = useState('personal-data');
-    const [modalType, setModalType] = useState<'name' | 'username' | 'biogram'  | 'password' | null>(null);
+    const [modalType, setModalType] = useState<'name' | 'username' | 'biogram'  | 'password' | 'mentor_subscribe_price' | null>(null);
     const [msgSuccess, setMsgSuccess] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [userData, setUserData] = useState({});
@@ -69,6 +69,13 @@ export default function SettingsPage() {
                     newPassword: data.newPassword
                 };
                 break;
+            case 'mentor_subscribe_price':
+                httpSetter = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.settings.changeMentorSubscribePrice}`;
+                requestData = {
+                    user_id: user?.id,
+                    mentor_subscribe_price: data.mentorSubscribePrice
+                };
+                break;
         }
 
         try {
@@ -83,7 +90,7 @@ export default function SettingsPage() {
         }
     };
 
-    const openModal = (type: 'name' | 'username' | 'biogram' | 'password') => {
+    const openModal = (type: 'name' | 'username' | 'biogram'  | 'password' | 'mentor_subscribe_price') => {
         setModalType(type);
         setIsModalOpen(true);
     };

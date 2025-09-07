@@ -39,23 +39,23 @@ const MentorFinderProperties : React.FC<MentorProfilePropertiesProps> = ({
 
                         <div className="mb-5">
                                <span className="text-base font-medium text-app-silver">
-                                   {mentor.profile.username}
+                                   @{mentor.profile.username}
                                </span>
                         </div>
 
                         <div className="mb-2.5">
-                            <p className="text-sm font-regular text-app-silver">
+                            <p className="text-base font-regular text-app-silver">
                                 {mentor.profile.biogram}
                             </p>
                         </div>
                     </div>
 
                     <div className="flex justify-center mt-4">
-                        <p className="mt-4 text-base text-app-silver mr-5">
-                            <span className="font-semibold text-app-dark">{articles.length}</span> artykuły
+                        <p className="mt-4 text-base mr-5">
+                            <span className="font-semibold text-app-black">{articles.length}</span> <span className="text-app-silver  font-medium">artykuły</span>
                         </p>
-                        <p className="mt-4 text-base text-app-silver ml-5">
-                            <span className="font-semibold text-app-dark">{followers.length}</span> obserwujących
+                        <p className="mt-4 text-base ml-5">
+                            <span className="font-semibold text-app-black">{followers.length}</span> <span className="text-app-silver  font-medium">obserwujących</span>
                         </p>
                     </div>
                 </div>

@@ -32,7 +32,7 @@ const YourContactsList: React.FC<YourContactListProps> = ({contacts} : YourConta
 
                                     <div className="mt-6 text-center">
                                         <span className="block text-lg mb-2 font-medium text-app-dark">{contact.contact_user?.profile.name} {contact.contact_user?.profile.surname}</span>
-                                        <span className="block text-sm mb-2 font-regular text-app-silver">{contact.contact_user?.profile.username}</span>
+                                        <span className="block text-sm mb-2 font-regular text-app-silver">@{contact.contact_user?.profile.username}</span>
                                         <span className="block text-sm mb-2 font-regular  text-app-silver">{contact.contact_user?.email}</span>
                                     </div>
                                 </div>

@@ -35,7 +35,7 @@ const FollowersList: React.FC<FollowersListProps> = ({followers}: FollowersListP
                                     {profile.name} {profile.surname}
                                 </div>
                                 <div className="text-base global--text-silver mt-1">
-                                    {profile.username}
+                                    @{profile.username}
                                 </div>
                             </div>
                         </div>

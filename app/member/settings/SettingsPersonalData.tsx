@@ -51,7 +51,7 @@ const SettingsPersonalData: React.FC<PersonalData> = ({
                         </button>
                     </div>
                 </div>
-
+                {user.account_type == 'M' &&
                 <div className="pt-5 pb-5 pl-5 pr-5 grid grid-cols-3 border-b global--b-border-d-white items-center">
                     <div className="relative">
                         <span className="font-body global--text-dark text-sm font-medium">Biogram</span>
@@ -70,7 +70,7 @@ const SettingsPersonalData: React.FC<PersonalData> = ({
                             <MoreHorizontal size={20} />
                         </button>
                     </div>
-                </div>
+                </div> }
 
                 <div className="pt-5 pb-5 pl-5 pr-5 grid grid-cols-3 border-b global--b-border-d-white items-center">
                     <div className="relative">
@@ -78,7 +78,7 @@ const SettingsPersonalData: React.FC<PersonalData> = ({
                     </div>
 
                     <div className="relative">
-                        <span className="font-body global--text-silver text-sm">{"•".repeat(user.password_length)} </span>
+                        <span className="font-body text-app-silver text-sm">{"•".repeat(user.password_length)} </span>
                     </div>
 
                     <div className="relative text-right">
@@ -87,6 +87,25 @@ const SettingsPersonalData: React.FC<PersonalData> = ({
                         </button>
                     </div>
                 </div>
+
+                {user.account_type == 'M' &&
+                <div className="pt-5 pb-5 pl-5 pr-5 grid grid-cols-3 border-b global--b-border-d-white items-center">
+                    <div className="relative">
+                        <span className="text-app-dark text-sm font-medium">Cena twojej subskrybcji</span>
+                    </div>
+
+                    <div className="relative">
+                        <span className="text-app-silver text-sm">
+                            {user.profile.mentor_subscribe_price ? user.profile.mentor_subscribe_price  : 0} zł
+                        </span>
+                    </div>
+
+                    <div className="relative text-right">
+                        <button type="button" className="p-2 border rounded hover:bg-gray-50" onClick={() => openModal('mentor_subscribe_price')}>
+                            <MoreHorizontal size={20} />
+                        </button>
+                    </div>
+                </div> }
 
                 <div className="pt-5 pb-5 pl-5 pr-5 grid grid-cols-3 border-b global--b-border-d-white items-center">
                     <div className="relative">
@@ -122,7 +141,8 @@ const SettingsPersonalData: React.FC<PersonalData> = ({
                         name: user.profile.name,
                         surname: user.profile.surname,
                         username: user.profile.username,
-                        biogram: user.profile.biogram
+                        biogram: user.profile.biogram,
+                        mentor_subscribe_price: user.profile.mentor_subscribe_price
                     }}
                 />
             )}

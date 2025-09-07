@@ -5,7 +5,7 @@ import {Article} from "@/app/types";
 interface MentorProfileArticlesProps{
     mentor: Mentor,
     openArticleModal: (articles:Article) => void;
-    articles: any[];
+    articles: Article[];
 }
 
 const MentorFinderArticles : React.FC<MentorProfileArticlesProps> = ({
@@ -31,12 +31,15 @@ const MentorFinderArticles : React.FC<MentorProfileArticlesProps> = ({
                                 <div key={article.id} className="relative aspect-[4/5] bg-cover bg-center bg-gray-200 cursor-pointer rounded-md"
                                      style={{backgroundImage: article.thumbnail_url ? `url(${article.thumbnail_url})` : undefined}}
                                      onClick={() => openArticleModal(article)}>
+                                    {article.content_type === 'paid' && (
+                                        <div className="px-5 py-3 absolute top-3 right-3 bg-app-dark-gold  text-app-black  text-xs  rounded-full font-bold z-10">PREMIUM</div>
+                                    )}
                                     <div className="absolute inset-0 p-4 flex flex-col rounded-md justify-end" style={{backgroundColor: `${mentor.profile.user_avatar_color}30`}}>
                                         <div className="p-4 rounded-md" style={{backgroundColor: `${mentor.profile.user_avatar_color}95`}}>
                                             <h3 className="text-app-black font-semibold text-xl mb-2 leading-tight">
                                                 {article.title}
                                             </h3>
-                                            <p className="text-app-dark text-xs leading-relaxed line-clamp-4">
+                                            <p className="text-app-black font-medium text-sm leading-relaxed line-clamp-4">
                                                 {article.summary}
                                             </p>
                                         </div>

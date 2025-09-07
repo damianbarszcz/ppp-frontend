@@ -1,8 +1,8 @@
 import React, {useState} from "react";
-import Input from "@/app/components/ui/Input";
 import Link from "next/link";
 import {getInitials} from "@/app/components/utils/avatar";
 import {isDarkColor} from "@/app/components/utils/color";
+import MentorSearchBox from "./MentorSearchBox";
 import { useRouter } from "next/navigation";
 import { User } from '@/app/types/user.types';
 
@@ -16,16 +16,6 @@ const ProspectorHome : React.FC<ProspectorDashboardProps> = ({
     const initials = getInitials(user.profile.name, user.profile.surname);
     const isDark = isDarkColor(user.profile.user_avatar_color);
     const textColorClass = isDark ? 'text-white' : 'text-black';
-
-    const router = useRouter();
-    const [searchValue, setSearchValue] = useState("");
-
-    const handleSearchSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (searchValue.trim() !== "") {
-            router.push(`/member/prospector/mentor-search?username=${encodeURIComponent(searchValue.trim())}`);
-        }
-    };
 
     return (
             <main>
@@ -47,26 +37,7 @@ const ProspectorHome : React.FC<ProspectorDashboardProps> = ({
                     </div>
 
                     <div className="m-auto mt-5 w-full max-w-[800px]">
-                        <form onSubmit={handleSearchSubmit} className="relative">
-                            <Input
-                                isLabel={false}
-                                labelCaption=""
-                                name="account-search"
-                                type="search"
-                                placeholder="Jakiego  chciałbyś znaleźć ?"
-                                uiType="light"
-                                value={searchValue}
-                                validateError=""
-                                onChange={(e) => setSearchValue(e.target.value)}
-                            />
-
-                            <button type="submit" className="absolute top-3 right-6">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#5F6368">
-                                    <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14
-                                    83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
-                                </svg>
-                            </button>
-                        </form>
+                        <MentorSearchBox name="account-search" />
                     </div>
 
                     <div className="mt-10 m-auto grid grid-cols-2 gap-4 w-full max-w-[800px]">

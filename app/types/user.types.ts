@@ -25,6 +25,7 @@ export interface UserProfile {
     username: string;
     biogram:string;
     user_avatar_color: string;
+    mentor_subscribe_price?: number;
     created_at: string;
     updated_at: string;
 }

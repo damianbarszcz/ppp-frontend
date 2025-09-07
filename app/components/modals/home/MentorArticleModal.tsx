@@ -12,7 +12,7 @@ const MentorArticleModal: React.FC<{
             <div className="bg-white rounded-lg w-full max-w-[1750px] max-h-[95vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 <div className="relative p-20">
                     <div className="max-w-[1024px] pb-5 m-auto">
-                        <h2 className="text-2xl font-body font-semibold mb-4 global--text-dark">{selectedPost.title}</h2>
+                        <h2 className="text-2xl font-semibold mb-4 text-app-dark">{selectedPost.title}</h2>
                     </div>
 
                     <div className="pt-10 max-w-[1024px] m-auto text-center flex justify-center">

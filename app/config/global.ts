@@ -29,6 +29,7 @@ export const API_CONFIG = {
             changeUsername: '/api/settings/personal-data/username',
             changeBiogram: '/api/settings/personal-data/biogram',
             changePassword: '/api/settings/personal-data/password',
+            changeMentorSubscribePrice: '/api/settings/personal-data/mentor-subscribe-price',
         },
         //Article routes
         article:{
@@ -38,10 +39,19 @@ export const API_CONFIG = {
         //Follower routes
         follower:{
             getFollowers: '/api/followers/',
+            unfollowMentor: '/api/followers/',
+            followMentor: '/api/followers/',
+            checkIsFollowing: '/api/followers/check/'
+
+        },
+        //Subscribe routes
+        payments:{
+            checkIsSubscribe: '/api/payments/mentor/status/',
         },
         //ManagePlan routes
         managePlan:{
             createMentorPlusSession: '/api/subscriptions/mentor-plus-session',
+            createUserMentorSubscribeSession: '/api/subscriptions/user-subscribe-session',
             handlePayment: '/api/subscriptions/process-payment',
         },
 
@@ -49,7 +59,6 @@ export const API_CONFIG = {
         notification:{
             fetchNotify: '/api/notification/',
         },
-
 
         //Contact routes
         contact:{
