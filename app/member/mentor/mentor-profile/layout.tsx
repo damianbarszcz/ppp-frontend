@@ -5,6 +5,6 @@ export const metadata: Metadata = {
     description: "Twoje konto PPP do zarządzania swoim profilem.",
 };
 
-export default function HomeLayout({ children }: { children: React.ReactNode }) {
+export default function MentorProfileLayout({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
 }

@@ -4,13 +4,12 @@ import styles from "@/app/member/prospector/search-creator/SearchCreatorSteps.mo
 interface SearchCreatorStepsProps {
     stage: number;
 }
+
 const STEPS = [
     { id: 1, label: "Start" },
-    { id: 2, label: "Cel współpracy" },
-    { id: 3, label: "Preferencje komunikacyjne" },
-    { id: 4, label: "Kompetencje i doświadczenie" },
-    { id: 5, label: "Format współpracy" },
-    { id: 6, label: "Dopasowanie i oczekiwania" }
+    { id: 2, label: "Obszary współpracy" },
+    { id: 3, label: "Kompetencje i doświadczenie" },
+    { id: 4, label: "Format współpracy" }
 ] as const;
 
 const SearchCreatorSteps : React.FC<SearchCreatorStepsProps> = (
@@ -62,4 +61,4 @@ const SearchCreatorSteps : React.FC<SearchCreatorStepsProps> = (
     );
 }
 
-export default  SearchCreatorSteps;
+export default SearchCreatorSteps;

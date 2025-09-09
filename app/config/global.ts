@@ -21,6 +21,10 @@ export const API_CONFIG = {
             getProspectorProfile: '/api/prospector-profile/get/user/',
             updateProspectorProfile: '/api/prospector-profile/update/user/',
             publishProspectorProfile: '/api/prospector-profile/create',
+
+            getMentorProfile: '/api/mentor-profile/get/user/',
+            updateMentorProfile: '/api/mentor-profile/update/user/',
+            publishMentorProfile: '/api/mentor-profile/create',
         },
 
         //Settings routes

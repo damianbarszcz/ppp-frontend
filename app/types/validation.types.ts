@@ -23,7 +23,3 @@ export interface ArticleValidationFrontendError {
     thumbnailUrlError: string;
     contentError: string;
 }
-
-export interface ProfileCreatorValidationFrontendError {
-    aboutMeError: string;
-}

@@ -8,3 +8,4 @@ export * from './contact.types';
 export * from './notification.types';
 export * from './profile.types';
 export * from './validation.types';
+export * from './recommendation.types';

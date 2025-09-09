@@ -10,7 +10,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>{
     uiType: "light" | "dark";
     required?: boolean;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    validateError: string;
+    validateError: string | undefined;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(({placeholder, type, name, uiType, labelCaption, validateError, required,onChange, isLabel, ...rest }, ref)  => {

@@ -8,43 +8,8 @@ import SearchCreatorStage1 from "./SearchCreatorStage1";
 import SearchCreatorStage2 from "./SearchCreatorStage2";
 import SearchCreatorStage3 from "./SearchCreatorStage3";
 import SearchCreatorStage4 from "./SearchCreatorStage4";
-import SearchCreatorStage5 from "./SearchCreatorStage5";
-import SearchCreatorStage6 from "./SearchCreatorStage6";
 import RecommendedPeopleList from "./RecommendedPeopleList";
-
-interface SearchFormData {
-    // Stage 2 - obszary współpracy
-    collaborationAreas: string[];
-
-    // Stage 3 - preferencje współpracy
-    meetingFrequency: string;
-    sessionLength: string;
-    timePreferences: string[];
-    workStyles: string[];
-
-    // Stage 4 - kompetencje i doświadczenie
-    experienceLevel: string;
-    industries: string[];
-    requiredSkills: string[];
-    languages: string[];
-
-    // Stage 5 - format współpracy
-    projectType: string;
-    timeCommitment: string;
-    workModes: string[];
-    budgetRange: string;
-    location: string;
-
-    // Stage 6 - dopasowanie i oczekiwania
-    priorities: string[];
-    personalityTraits: string[];
-    specificRequirements: string[];
-    dealBreakers: string[];
-    additionalNotes: string;
-
-    // Stare pola do usunięcia po migracji
-    lookingFor: string[];
-}
+import {SearchFormData} from "@/app/types";
 
 export default function SearchCreatorPage() {
     const { user, logout } = useAuth();
@@ -53,46 +18,45 @@ export default function SearchCreatorPage() {
     const [stage, setStage] = useState(1);
 
     const [formData, setFormData] = useState<SearchFormData>({
-        // Stage 2
-        collaborationAreas: [],
-
-        // Stage 3
-        meetingFrequency: '',
-        sessionLength: '',
-        timePreferences: [],
-        workStyles: [],
-
-        // Stage 4
-        experienceLevel: '',
+        collaboration_areas: [],
+        experience_level: '',
         industries: [],
-        requiredSkills: [],
-        languages: [],
-
-        // Stage 5
-        projectType: '',
-        timeCommitment: '',
-        workModes: [],
-        budgetRange: '',
+        required_skills: [],
+        project_type: '',
+        time_commitment: '',
+        work_modes: [],
+        budget_range: '',
         location: '',
-
-        // Stage 6
-        priorities: [],
-        personalityTraits: [],
-        specificRequirements: [],
-        dealBreakers: [],
-        additionalNotes: '',
-
-        // Stare pole - do usunięcia
-        lookingFor: []
+        additional_notes: ''
     });
 
     const nextStage = () => {
         setStage((prev) => prev + 1);
     };
 
+    const resetSearch = () => {
+        setStage(1);
+        setFormData({
+            collaboration_areas: [],
+            experience_level: '',
+            industries: [],
+            required_skills: [],
+            project_type: '',
+            time_commitment: '',
+            work_modes: [],
+            budget_range: '',
+            location: '',
+            additional_notes: ''
+        });
+
+        sessionStorage.removeItem('searchResults');
+        sessionStorage.removeItem('searchId');
+        sessionStorage.removeItem('searchCriteria');
+        sessionStorage.removeItem('searchError');
+    };
+
     const updateFormData = (data: Partial<SearchFormData>) => {
         setFormData(prev => ({ ...prev, ...data }));
-        console.log('Updated formData:', { ...formData, ...data }); // Debug - usuń w produkcji
     };
 
     const renderCurrentStage = () => {
@@ -125,23 +89,7 @@ export default function SearchCreatorPage() {
                 );
             case 5:
                 return (
-                    <SearchCreatorStage5
-                        nextStage={nextStage}
-                        updateFormData={updateFormData}
-                        formData={formData}
-                    />
-                );
-            case 6:
-                return (
-                    <SearchCreatorStage6
-                        nextStage={nextStage}
-                        updateFormData={updateFormData}
-                        formData={formData}
-                    />
-                );
-            case 7:
-                return (
-                    <RecommendedPeopleList />
+                    <RecommendedPeopleList onRestartSearch={resetSearch} />
                 );
             default:
                 return <SearchCreatorStage1 nextStage={nextStage} />;
@@ -161,13 +109,13 @@ export default function SearchCreatorPage() {
                 type="standard"
             />
             <main className="flex h-[100vh]">
-                {stage !== 7 && (
+                {stage !== 5 && (
                     <section className="w-2/5 h-full">
                         <SearchCreatorSteps stage={stage} />
                     </section>
                 )}
 
-                <section className={`${stage === 7 ? 'w-full' : 'w-3/5'} h-full overflow-y-auto`}>
+                <section className={`${stage === 5 ? 'w-full' : 'w-3/5'} h-full overflow-y-auto`}>
                     {renderCurrentStage()}
                 </section>
             </main>

@@ -1,0 +1,32 @@
+.container_light {
+    background-color: #ffffff;
+}
+
+.selected_light {
+    border-color: #3861DA;
+    background-color: #eff6ff;
+}
+
+.unselected_light {
+    border-color: #d1d5db;
+    background-color: #ffffff;
+}
+
+.unselected_light:hover:not(.disabled) {
+    border-color: #3861DA;
+}
+
+.unselected_dark:hover:not(.disabled) {
+    border-color: #6b7280;
+}
+
+/* Disabled state */
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed !important;
+}
+
+.disabled:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}

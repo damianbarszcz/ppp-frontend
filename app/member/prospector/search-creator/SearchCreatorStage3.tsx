@@ -1,219 +1,106 @@
 import React, { useState } from "react";
 import Button from "@/app/components/ui/Button";
+import { EXPERIENCE_LEVELS, INDUSTRIES } from "@/app/constans/profileContans";
 
-interface SearchCreatorStage3Props {
+interface SearchCreatorStage4Props {
     nextStage: () => void;
     updateFormData: (data: any) => void;
     formData: any;
 }
 
-interface MeetingFrequency {
-    id: string;
-    title: string;
-    description: string;
-}
-
-interface SessionLength {
-    id: string;
-    title: string;
-    description: string;
-}
-
-interface TimePreference {
-    id: string;
-    title: string;
-    description: string;
-}
-
-interface WorkStyle {
-    id: string;
-    title: string;
-    description: string;
-}
-
-const MEETING_FREQUENCIES: MeetingFrequency[] = [
-    {
-        id: 'daily',
-        title: 'Codziennie',
-        description: 'Regularne codzienne sesje'
-    },
-    {
-        id: 'few-times-week',
-        title: '2-3x w tygodniu',
-        description: 'Intensywna współpraca'
-    },
-    {
-        id: 'weekly',
-        title: 'Tygodniowo',
-        description: 'Regularne spotkania co tydzień'
-    },
-    {
-        id: 'bi-weekly',
-        title: 'Co 2 tygodnie',
-        description: 'Spotkania co dwa tygodnie'
-    },
-    {
-        id: 'monthly',
-        title: 'Miesięcznie',
-        description: 'Rzadsze, ale dłuższe sesje'
-    }
-];
-
-const SESSION_LENGTHS: SessionLength[] = [
-    {
-        id: '30min',
-        title: '30 minut',
-        description: 'Krótkie, skoncentrowane sesje'
-    },
-    {
-        id: '1hour',
-        title: '1 godzina',
-        description: 'Standardowa długość spotkania'
-    },
-    {
-        id: '2hours',
-        title: '2 godziny',
-        description: 'Dłuższe sesje robocze'
-    },
-    {
-        id: 'flexible',
-        title: 'Elastycznie',
-        description: 'W zależności od potrzeb'
-    }
-];
-
-const TIME_PREFERENCES: TimePreference[] = [
-    {
-        id: 'morning',
-        title: 'Rano (8:00-12:00)',
-        description: 'Jestem najproduktywniejszy rano'
-    },
-    {
-        id: 'afternoon',
-        title: 'Południe (12:00-17:00)',
-        description: 'Preferuję popołudniowe godziny'
-    },
-    {
-        id: 'evening',
-        title: 'Wieczorem (17:00-21:00)',
-        description: 'Najlepsze godziny po pracy'
-    },
-    {
-        id: 'flexible',
-        title: 'Elastycznie',
-        description: 'Dostosowuję się do potrzeb'
-    }
-];
-
-const WORK_STYLES: WorkStyle[] = [
-    {
-        id: 'structured',
-        title: 'Strukturalny',
-        description: 'Lubię jasne plany, deadliny i organizację'
-    },
-    {
-        id: 'agile',
-        title: 'Agile/Scrum',
-        description: 'Iteracyjne podejście, sprinty, retrospektywy'
-    },
-    {
-        id: 'creative',
-        title: 'Kreatywny',
-        description: 'Swoboda, burze mózgów, eksperymentowanie'
-    },
-    {
-        id: 'result-oriented',
-        title: 'Zorientowany na wyniki',
-        description: 'Najważniejszy jest efekt końcowy'
-    }
-];
-
-const SearchCreatorStage3: React.FC<SearchCreatorStage3Props> = ({
-     nextStage,
-      updateFormData,
-      formData
-                                                                 }) => {
-    const [selectedFrequency, setSelectedFrequency] = useState<string>(
-        formData.meetingFrequency || ''
+const SearchCreatorStage4: React.FC<SearchCreatorStage4Props> = ({
+    nextStage,
+    updateFormData,
+    formData
+}) => {
+    const [selectedExperienceLevel, setSelectedExperienceLevel] = useState<string>(
+        formData.experience_level || ''
     );
-    const [selectedLength, setSelectedLength] = useState<string>(
-        formData.sessionLength || ''
+    const [selectedIndustries, setSelectedIndustries] = useState<string[]>(
+        formData.industries || []
     );
-    const [selectedTimePreferences, setSelectedTimePreferences] = useState<string[]>(
-        formData.timePreferences || []
+    const [requiredSkills, setRequiredSkills] = useState<string[]>(
+        formData.required_skills || []
     );
-    const [selectedWorkStyles, setSelectedWorkStyles] = useState<string[]>(
-        formData.workStyles || []
-    );
+    const [newSkill, setNewSkill] = useState('');
 
-    const handleFrequencySelect = (frequencyId: string) => {
-        setSelectedFrequency(frequencyId);
-        updateFormData({ meetingFrequency: frequencyId });
+    const handleExperienceLevelSelect = (levelId: string) => {
+        setSelectedExperienceLevel(levelId);
+        updateFormData({ experience_level: levelId });
     };
 
-    const handleLengthSelect = (lengthId: string) => {
-        setSelectedLength(lengthId);
-        updateFormData({ sessionLength: lengthId });
+    const toggleIndustry = (industryId: string) => {
+        const newIndustries = selectedIndustries.includes(industryId)
+            ? selectedIndustries.filter(i => i !== industryId)
+            : [...selectedIndustries, industryId];
+
+        setSelectedIndustries(newIndustries);
+        updateFormData({ industries: newIndustries });
     };
 
-    const toggleTimePreference = (timeId: string) => {
-        const newPreferences = selectedTimePreferences.includes(timeId)
-            ? selectedTimePreferences.filter(t => t !== timeId)
-            : [...selectedTimePreferences, timeId];
-
-        setSelectedTimePreferences(newPreferences);
-        updateFormData({ timePreferences: newPreferences });
+    const addSkill = () => {
+        if (newSkill.trim() && !requiredSkills.includes(newSkill.trim())) {
+            const updatedSkills = [...requiredSkills, newSkill.trim()];
+            setRequiredSkills(updatedSkills);
+            updateFormData({ required_skills: updatedSkills });
+            setNewSkill('');
+        }
     };
 
-    const toggleWorkStyle = (styleId: string) => {
-        const newStyles = selectedWorkStyles.includes(styleId)
-            ? selectedWorkStyles.filter(s => s !== styleId)
-            : [...selectedWorkStyles, styleId];
-
-        setSelectedWorkStyles(newStyles);
-        updateFormData({ workStyles: newStyles });
+    const removeSkill = (index: number) => {
+        const updatedSkills = requiredSkills.filter((_, i) => i !== index);
+        setRequiredSkills(updatedSkills);
+        updateFormData({ required_skills: updatedSkills });
     };
 
-    const canProceed = selectedFrequency && selectedLength &&
-        selectedTimePreferences.length > 0 && selectedWorkStyles.length > 0;
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addSkill();
+        }
+    };
+
+    const canProceed = selectedExperienceLevel && selectedIndustries.length > 0;
 
     return (
         <div className="max-w-5xl min-h-[90vh] max-h-[90vh] m-auto flex flex-col py-10 overflow-y-auto hide-scrollbar">
             <div className="flex flex-col justify-between flex-1 global--border-d-white rounded-md p-10">
                 <header>
-                    <h1 className="text-2xl font-bold text-app-dark mb-4">Preferencje komunikacyjne</h1>
+                    <h1 className="text-2xl font-bold text-app-dark mb-4">Kompetencje i doświadczenie</h1>
                     <p className="text-base font-regular text-app-silver leading-[30px]">
-                        Określ jak chcesz współpracować i kiedy jesteś dostępny.
+                        Określ jakiego poziomu doświadczenia i umiejętności szukasz u współpracowników.
                     </p>
                 </header>
 
                 <div className="flex-1">
                     <div className="mt-10 mb-10">
                         <header>
-                            <h2 className="text-lg font-semibold text-app-dark mb-4">Częstotliwość spotkań</h2>
-                            <p className="text-sm text-app-silver mb-4">Jak często chciałbyś się spotykać:</p>
+                            <h2 className="text-lg font-semibold text-app-dark mb-4">Oczekiwany poziom doświadczenia</h2>
+                            <p className="text-sm text-app-silver mb-4">Jaki poziom doświadczenia powinni mieć współpracownicy:</p>
                         </header>
 
                         <div className="grid grid-cols-1 gap-3">
-                            {MEETING_FREQUENCIES.map(frequency => (
+                            {EXPERIENCE_LEVELS.map(level => (
                                 <div
-                                    key={frequency.id}
-                                    onClick={() => handleFrequencySelect(frequency.id)}
+                                    key={level.id}
+                                    onClick={() => handleExperienceLevelSelect(level.id)}
                                     className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                                        selectedFrequency === frequency.id
+                                        selectedExperienceLevel === level.id
                                             ? 'global--border-blue global--bg-light-blue'
                                             : 'global--border-d-white hover:global--border-silver'
                                     }`}
                                 >
                                     <div className="flex items-center justify-between">
                                         <header>
-                                            <h3 className="font-semibold text-app-dark">{frequency.title}</h3>
-                                            <p className="text-sm text-app-silver">{frequency.description}</p>
+                                            <h3 className="font-semibold text-app-dark">{level.label}</h3>
+                                            {level.description && (
+                                                <p className="text-sm text-app-silver">{level.description}</p>
+                                            )}
                                         </header>
                                         <input
                                             type="radio"
-                                            name="frequency"
-                                            checked={selectedFrequency === frequency.id}
+                                            name="experienceLevel"
+                                            checked={selectedExperienceLevel === level.id}
                                             onChange={() => {}}
                                             className="text-blue-500"
                                         />
@@ -223,68 +110,34 @@ const SearchCreatorStage3: React.FC<SearchCreatorStage3Props> = ({
                         </div>
                     </div>
 
-                    {/* Sekcja 2: Długość sesji */}
+                    {/* Sekcja 2: Branże */}
                     <div className="mt-10 mb-10">
                         <header>
-                            <h2 className="text-lg font-semibold text-app-dark mb-4">Długość sesji</h2>
-                            <p className="text-sm text-app-silver mb-4">Preferowana długość spotkań:</p>
+                            <h2 className="text-lg font-semibold text-app-dark mb-4">Interesujące branże</h2>
+                            <p className="text-sm text-app-silver mb-4">Wybierz branże w których szukasz współpracowników:</p>
                         </header>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            {SESSION_LENGTHS.map(length => (
+                            {INDUSTRIES.map(industry => (
                                 <div
-                                    key={length.id}
-                                    onClick={() => handleLengthSelect(length.id)}
+                                    key={industry.id}
+                                    onClick={() => toggleIndustry(industry.id)}
                                     className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                                        selectedLength === length.id
+                                        selectedIndustries.includes(industry.id)
                                             ? 'global--border-blue global--bg-light-blue'
                                             : 'global--border-d-white hover:global--border-silver'
                                     }`}
                                 >
                                     <div className="flex items-center justify-between">
                                         <header>
-                                            <h3 className="font-semibold text-app-dark">{length.title}</h3>
-                                            <p className="text-sm text-app-silver">{length.description}</p>
-                                        </header>
-                                        <input
-                                            type="radio"
-                                            name="sessionLength"
-                                            checked={selectedLength === length.id}
-                                            onChange={() => {}}
-                                            className="text-blue-500"
-                                        />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Sekcja 3: Preferowane godziny */}
-                    <div className="mt-10 mb-10">
-                        <header>
-                            <h2 className="text-lg font-semibold text-app-dark mb-4">Preferowane godziny</h2>
-                            <p className="text-sm text-app-silver mb-4">Kiedy jesteś najproduktywniejszy:</p>
-                        </header>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            {TIME_PREFERENCES.map(time => (
-                                <div
-                                    key={time.id}
-                                    onClick={() => toggleTimePreference(time.id)}
-                                    className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                                        selectedTimePreferences.includes(time.id)
-                                            ? 'global--border-blue global--bg-light-blue'
-                                            : 'global--border-d-white hover:global--border-silver'
-                                    }`}
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <header>
-                                            <h3 className="font-semibold text-app-dark">{time.title}</h3>
-                                            <p className="text-sm text-app-silver">{time.description}</p>
+                                            <h3 className="font-semibold text-app-dark">{industry.label}</h3>
+                                            {industry.description && (
+                                                <p className="text-sm text-app-silver">{industry.description}</p>
+                                            )}
                                         </header>
                                         <input
                                             type="checkbox"
-                                            checked={selectedTimePreferences.includes(time.id)}
+                                            checked={selectedIndustries.includes(industry.id)}
                                             onChange={() => {}}
                                             className="text-blue-500"
                                         />
@@ -294,39 +147,59 @@ const SearchCreatorStage3: React.FC<SearchCreatorStage3Props> = ({
                         </div>
                     </div>
 
-                    {/* Sekcja 4: Styl pracy */}
+                    {/* Sekcja 3: Wymagane umiejętności */}
                     <div className="mt-10 mb-10">
                         <header>
-                            <h2 className="text-lg font-semibold text-app-dark mb-4">Styl pracy</h2>
-                            <p className="text-sm text-app-silver mb-4">Jakie podejście do pracy preferujesz:</p>
+                            <h2 className="text-lg font-semibold text-app-dark mb-4">Pożądane umiejętności</h2>
+                            <p className="text-sm text-app-silver mb-4">Dodaj umiejętności, które będą przydatne w współpracy (opcjonalnie):</p>
                         </header>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            {WORK_STYLES.map(style => (
-                                <div
-                                    key={style.id}
-                                    onClick={() => toggleWorkStyle(style.id)}
-                                    className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                                        selectedWorkStyles.includes(style.id)
-                                            ? 'global--border-blue global--bg-light-blue'
-                                            : 'global--border-d-white hover:global--border-silver'
-                                    }`}
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <header>
-                                            <h3 className="font-semibold text-app-dark">{style.title}</h3>
-                                            <p className="text-sm text-app-silver">{style.description}</p>
-                                        </header>
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedWorkStyles.includes(style.id)}
-                                            onChange={() => {}}
-                                            className="text-blue-500"
-                                        />
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="flex gap-2 mb-4">
+                            <input
+                                type="text"
+                                value={newSkill}
+                                onChange={(e) => setNewSkill(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                                className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                                placeholder="np. React, Python, SEO, Photoshop..."
+                            />
+                            <button
+                                onClick={addSkill}
+                                disabled={!newSkill.trim()}
+                                className={`px-6 py-3 rounded-lg transition-colors ${
+                                    newSkill.trim()
+                                        ? 'bg-blue-500 text-white hover:bg-blue-600'
+                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                }`}
+                            >
+                                Dodaj
+                            </button>
                         </div>
+
+                        {requiredSkills.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                                {requiredSkills.map((skill, index) => (
+                                    <span
+                                        key={index}
+                                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm flex items-center gap-2"
+                                    >
+                                        {skill}
+                                        <button
+                                            onClick={() => removeSkill(index)}
+                                            className="text-blue-500 hover:text-blue-700 ml-1 font-bold"
+                                        >
+                                            ×
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+
+                        {requiredSkills.length === 0 && (
+                            <p className="text-sm text-app-silver italic">
+                                Nie dodano jeszcze żadnych umiejętności. To pole jest opcjonalne.
+                            </p>
+                        )}
                     </div>
                 </div>
 
@@ -340,4 +213,4 @@ const SearchCreatorStage3: React.FC<SearchCreatorStage3Props> = ({
     );
 };
 
-export default SearchCreatorStage3;
+export default SearchCreatorStage4;

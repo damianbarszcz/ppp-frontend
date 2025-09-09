@@ -71,7 +71,7 @@ export default function LoginPage() {
                 }, 200);
             }
 
-        } catch (error: any) {
+        } catch (error) {
             if (error.response?.status === 422 && error.response?.data?.errors) {
                 getValidationErrors(error.response.data.errors);
             } else {
