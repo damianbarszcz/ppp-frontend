@@ -119,7 +119,7 @@ const RecommendedPeopleList: React.FC<RecommendedPeopleListProps> = ({
     const renderErrorState = () => (
         <div className="min-h-[60vh] flex items-center justify-center">
             <div className="text-center max-w-md">
-                <div className="text-red-500 text-5xl mb-4">⚠️</div>
+                <div className="text-red-500 text-5xl mb-4"></div>
                 <h2 className="text-xl font-semibold text-app-dark mb-4">Wystąpił problem</h2>
                 <p className="text-app-silver mb-6">{error}</p>
                 <Button type="button" uiType="primary" size="regularSize" onClick={handleRestartSearch}>
@@ -132,7 +132,7 @@ const RecommendedPeopleList: React.FC<RecommendedPeopleListProps> = ({
     const renderEmptyState = () => (
         <div className="min-h-[60vh] flex items-center justify-center">
             <div className="text-center max-w-md">
-                <div className="text-gray-400 text-5xl mb-4">🔍</div>
+                <div className="text-gray-400 text-5xl mb-4"></div>
                 <h2 className="text-xl font-semibold text-app-dark mb-4">Brak wyników</h2>
                 <p className="text-app-silver mb-6">
                     Nie znaleźliśmy żadnych dopasowań dla Twoich kryteriów.
