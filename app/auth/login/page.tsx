@@ -75,7 +75,7 @@ export default function LoginPage() {
             if (error.response?.status === 422 && error.response?.data?.errors) {
                 getValidationErrors(error.response.data.errors);
             } else {
-                setMsgError(error.response?.data?.message || "Wystąpił błąd podczas logowania");
+                setMsgError(error.response?.data?.message || "Wystapil blad podczas logowania");
             }
         }
     };

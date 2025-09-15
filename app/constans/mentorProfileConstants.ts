@@ -1,4 +1,3 @@
-// constants/mentorProfileConstants.ts
 
 export interface OptionItem {
     id: string;
